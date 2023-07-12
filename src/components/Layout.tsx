@@ -16,7 +16,7 @@ function Nav() {
   return (
     <nav className="flex items-center justify-between py-4">
       <Link href="/">
-        <h1 className="inline-block text-4xl font-bold">Twine</h1>
+        <h1 className="inline-block text-4xl font-bold">Strand</h1>
       </Link>
 
       <div>

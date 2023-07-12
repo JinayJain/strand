@@ -1,5 +1,5 @@
 import { createTRPCRouter } from "@/server/api/trpc";
-import { twineRouter } from "./routers/twine";
+import { strandRouter } from "./routers/strand";
 
 /**
  * This is the primary router for your server.
@@ -7,7 +7,7 @@ import { twineRouter } from "./routers/twine";
  * All routers added in /api/routers should be manually added here.
  */
 export const appRouter = createTRPCRouter({
-  twine: twineRouter,
+  strand: strandRouter,
 });
 
 // export type definition of API

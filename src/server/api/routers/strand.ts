@@ -4,11 +4,11 @@ import {
   publicProcedure,
   protectedProcedure,
 } from "@/server/api/trpc";
-import { Twine } from "@prisma/client";
+import type { Strand } from "@prisma/client";
 
-export const twineRouter = createTRPCRouter({
-  getRootTwines: publicProcedure.query(({ ctx }) => {
-    return ctx.prisma.twine.findMany({
+export const strandRouter = createTRPCRouter({
+  getRootStrands: publicProcedure.query(({ ctx }) => {
+    return ctx.prisma.strand.findMany({
       where: {
         parent: null,
       },
@@ -17,10 +17,10 @@ export const twineRouter = createTRPCRouter({
       },
     });
   }),
-  getTwineWithTree: publicProcedure
+  getStrandWithTree: publicProcedure
     .input(z.object({ id: z.string() }))
     .query(async ({ input, ctx }) => {
-      const twine = await ctx.prisma.twine.findUnique({
+      const strand = await ctx.prisma.strand.findUnique({
         where: {
           id: input.id,
         },
@@ -35,18 +35,18 @@ export const twineRouter = createTRPCRouter({
         },
       });
 
-      if (!twine) {
-        throw new Error("Twine not found");
+      if (!strand) {
+        throw new Error("Strand not found");
       }
 
       const ancestors = await ctx.prisma.$queryRaw`
         WITH RECURSIVE ancestors AS (
           SELECT id, parentId, content, 1 AS depth
-          FROM twine
+          FROM strand
           WHERE id = ${input.id}
           UNION ALL
           SELECT t.id, t.parentId, t.content, a.depth + 1
-          FROM twine t
+          FROM strand t
           JOIN ancestors a ON t.id = a.parentId
         )
         SELECT id, parentId, content
@@ -56,11 +56,11 @@ export const twineRouter = createTRPCRouter({
       `;
 
       return {
-        ...twine,
-        ancestors: ancestors as Pick<Twine, "id" | "content" | "parentId">[],
+        ...strand,
+        ancestors: ancestors as Pick<Strand, "id" | "content" | "parentId">[],
       };
     }),
-  createTwine: protectedProcedure
+  createStrand: protectedProcedure
     .input(
       z.object({
         content: z.string().min(1).max(256),
@@ -68,7 +68,7 @@ export const twineRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ input, ctx }) => {
-      return ctx.prisma.twine.create({
+      return ctx.prisma.strand.create({
         data: {
           content: input.content,
           user: {

@@ -2,24 +2,24 @@ import Layout from "@/components/Layout";
 import { api } from "@/utils/api";
 import Link from "next/link";
 
-export default function TwinesList() {
-  const twines = api.twine.getRootTwines.useQuery();
+export default function StrandsList() {
+  const strands = api.strand.getRootStrands.useQuery();
 
   return (
-    <Layout pageTitle="Twine">
+    <Layout pageTitle="Strand">
       <Link href="/t/new" className="hover:text-gray-500 hover:underline">
-        Create a new twine
+        Create a new strand
       </Link>
 
       <ul>
-        {twines.data &&
-          twines.data.map((twine) => (
-            <li key={twine.id}>
+        {strands.data &&
+          strands.data.map((strand) => (
+            <li key={strand.id}>
               <Link
-                href={`/t/${twine.id}`}
+                href={`/t/${strand.id}`}
                 className="hover:text-gray-500 hover:underline"
               >
-                {twine.content} by {twine.user.name}
+                {strand.content} by {strand.user.name}
               </Link>
             </li>
           ))}

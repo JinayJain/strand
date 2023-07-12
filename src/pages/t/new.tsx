@@ -5,14 +5,14 @@ import { api } from "@/utils/api";
 import { useRouter } from "next/router";
 import { useState } from "react";
 
-export default function TwineNew() {
-  const createTwine = api.twine.createTwine.useMutation();
+export default function StrandNew() {
+  const createStrand = api.strand.createStrand.useMutation();
   const router = useRouter();
 
   const [text, setText] = useState<string>("");
 
   const handleCreate = async () => {
-    const result = await createTwine.mutateAsync({
+    const result = await createStrand.mutateAsync({
       content: text,
     });
 
@@ -20,7 +20,7 @@ export default function TwineNew() {
   };
 
   return (
-    <Layout pageTitle="Twine">
+    <Layout pageTitle="Strand">
       {/* <textarea
         className="block"
         placeholder="Start your story here"

@@ -6,41 +6,41 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useState } from "react";
 
-export default function Twine() {
+export default function Strand() {
   const router = useRouter();
   const { id } = router.query;
-  const twineId = (id ?? "") as string;
+  const strandId = (id ?? "") as string;
 
-  const twineQuery = api.twine.getTwineWithTree.useQuery({ id: twineId });
-  const createTwine = api.twine.createTwine.useMutation();
+  const strandQuery = api.strand.getStrandWithTree.useQuery({ id: strandId });
+  const createStrand = api.strand.createStrand.useMutation();
 
   const [text, setText] = useState<string>("");
 
   const handleSubmit = async () => {
-    const createdTwine = await createTwine.mutateAsync({
+    const createdStrand = await createStrand.mutateAsync({
       content: text,
-      parentId: twineId,
+      parentId: strandId,
     });
 
     setText("");
 
-    await router.push(`/t/${createdTwine.id}`);
+    await router.push(`/t/${createdStrand.id}`);
   };
 
   return (
-    <Layout pageTitle="Twine">
-      {twineQuery.data && (
+    <Layout pageTitle="Strand">
+      {strandQuery.data && (
         <>
           <ul>
-            {twineQuery.data.ancestors.map((twine) => (
-              <li key={twine.id}>
-                <Link href={`/t/${twine.id}`} className="hover:text-gray-500">
-                  {twine.content}
+            {strandQuery.data.ancestors.map((strand) => (
+              <li key={strand.id}>
+                <Link href={`/t/${strand.id}`} className="hover:text-gray-500">
+                  {strand.content}
                 </Link>
               </li>
             ))}
           </ul>
-          <p>{twineQuery.data.content}</p>
+          <p>{strandQuery.data.content}</p>
         </>
       )}
 
@@ -54,11 +54,11 @@ export default function Twine() {
         Submit
       </Button>
 
-      {twineQuery.data && (
+      {strandQuery.data && (
         <ul>
-          {twineQuery.data.children.map((twine) => (
-            <li key={twine.id} className="text-gray-300 hover:text-gray-400">
-              <Link href={`/t/${twine.id}`}>{twine.content}</Link>
+          {strandQuery.data.children.map((strand) => (
+            <li key={strand.id} className="text-gray-300 hover:text-gray-400">
+              <Link href={`/t/${strand.id}`}>{strand.content}</Link>
             </li>
           ))}
         </ul>
