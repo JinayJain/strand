@@ -7,7 +7,7 @@ export default function StrandsList() {
 
   return (
     <Layout pageTitle="Strand">
-      <Link href="/t/new" className="hover:text-gray-500 hover:underline">
+      <Link href="/s/new" className="hover:text-gray-500 hover:underline">
         Create a new strand
       </Link>
 
@@ -16,7 +16,7 @@ export default function StrandsList() {
           strands.data.map((strand) => (
             <li key={strand.id}>
               <Link
-                href={`/t/${strand.id}`}
+                href={`/s/${strand.id}`}
                 className="hover:text-gray-500 hover:underline"
               >
                 {strand.content} by {strand.user.name}

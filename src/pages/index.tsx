@@ -8,7 +8,7 @@ export default function Home() {
         Strand is a collaborative storytelling platform. It&apos;s like a
         choose-your-own-adventure book, but with friends!
       </p>
-      <Link href="/t" className="self-center">
+      <Link href="/s" className="self-center">
         <button className="border px-3 py-2 text-center hover:bg-gray-200">
           Explore strands
         </button>

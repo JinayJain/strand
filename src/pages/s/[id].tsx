@@ -24,7 +24,7 @@ export default function Strand() {
 
     setText("");
 
-    await router.push(`/t/${createdStrand.id}`);
+    await router.push(`/s/${createdStrand.id}`);
   };
 
   return (
@@ -34,7 +34,7 @@ export default function Strand() {
           <ul>
             {strandQuery.data.ancestors.map((strand) => (
               <li key={strand.id}>
-                <Link href={`/t/${strand.id}`} className="hover:text-gray-500">
+                <Link href={`/s/${strand.id}`} className="hover:text-gray-500">
                   {strand.content}
                 </Link>
               </li>
@@ -58,7 +58,7 @@ export default function Strand() {
         <ul>
           {strandQuery.data.children.map((strand) => (
             <li key={strand.id} className="text-gray-300 hover:text-gray-400">
-              <Link href={`/t/${strand.id}`}>{strand.content}</Link>
+              <Link href={`/s/${strand.id}`}>{strand.content}</Link>
             </li>
           ))}
         </ul>

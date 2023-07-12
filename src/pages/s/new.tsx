@@ -16,7 +16,7 @@ export default function StrandNew() {
       content: text,
     });
 
-    await router.push(`/t/${result.id}`);
+    await router.push(`/s/${result.id}`);
   };
 
   return (
