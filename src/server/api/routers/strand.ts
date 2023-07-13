@@ -41,15 +41,15 @@ export const strandRouter = createTRPCRouter({
 
       const ancestors = await ctx.prisma.$queryRaw`
         WITH RECURSIVE ancestors AS (
-          SELECT id, parentId, content, 1 AS depth
+          SELECT id, parent_id, content, 1 AS depth
           FROM strand
           WHERE id = ${input.id}
           UNION ALL
-          SELECT t.id, t.parentId, t.content, a.depth + 1
+          SELECT t.id, t.parent_id, t.content, a.depth + 1
           FROM strand t
-          JOIN ancestors a ON t.id = a.parentId
+          JOIN ancestors a ON t.id = a.parent_id
         )
-        SELECT id, parentId, content
+        SELECT id, parent_id, content
         FROM ancestors
         WHERE id != ${input.id}
         ORDER BY depth DESC
@@ -57,7 +57,7 @@ export const strandRouter = createTRPCRouter({
 
       return {
         ...strand,
-        ancestors: ancestors as Pick<Strand, "id" | "content" | "parentId">[],
+        ancestors: ancestors as Pick<Strand, "id" | "content" | "parent_id">[],
       };
     }),
   createStrand: protectedProcedure

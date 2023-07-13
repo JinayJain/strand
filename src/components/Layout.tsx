@@ -14,15 +14,17 @@ const cardo = Cardo({
 function Nav() {
   const { data: session, status } = useSession();
   return (
-    <nav className="flex items-center justify-between py-4">
+    <nav className="flex items-center justify-between border-b-2 border-gray-200 py-4">
       <Link href="/">
-        <h1 className="inline-block text-4xl font-bold">Strand</h1>
+        <h1 className="inline-block text-2xl font-bold">Strand</h1>
       </Link>
 
       <div>
         {status === "authenticated" ? (
           <>
-            <p className="mr-4 inline-block">{session?.user?.name}</p>
+            <p className="mr-4 inline-block text-gray-500">
+              {session?.user?.name}
+            </p>
             <Button onClick={signOut}>Sign out</Button>
           </>
         ) : (
@@ -50,7 +52,7 @@ export default function Layout({
         <title>{pageTitle}</title>
       </Head>
       <Nav />
-      <main>{children}</main>
+      <main className="mt-4">{children}</main>
     </div>
   );
 }
