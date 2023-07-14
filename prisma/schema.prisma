@@ -17,19 +17,37 @@ datasource db {
 
 // APPLICATION MODELS
 model Strand {
-    id        String  @id @default(cuid())
-    user_id   String
+    id        String  @id @default(uuid())
+    author_id String
     parent_id String?
     content   String
+    story_id  String
 
     created_at DateTime @default(now())
     updated_at DateTime @updatedAt
 
-    user     User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
-    parent   Strand?  @relation("strand_tree", fields: [parent_id], references: [id])
-    children Strand[] @relation("strand_tree")
+    author     User         @relation(fields: [author_id], references: [id], onDelete: Cascade)
+    parent     Strand?      @relation("strand_tree", fields: [parent_id], references: [id])
+    children   Strand[]     @relation("strand_tree")
+    root_story StrandStory? @relation("story_root_strand")
+    story      StrandStory  @relation("strand_story", fields: [story_id], references: [id], onDelete: NoAction)
 
     @@map("strand")
+}
+
+model StrandStory {
+    id          String    @id @default(uuid())
+    root_id     String    @unique
+    title       String
+    active_date DateTime? @db.Date
+
+    created_at DateTime @default(now())
+    updated_at DateTime @updatedAt
+
+    root    Strand   @relation("story_root_strand", fields: [root_id], references: [id], onDelete: NoAction)
+    strands Strand[] @relation("strand_story")
+
+    @@map("strand_story")
 }
 
 // Necessary for Next auth

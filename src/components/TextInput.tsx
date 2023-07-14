@@ -1,6 +1,6 @@
 import clsx from "clsx";
 
-export default function Textbox({
+export default function TextInput({
   className,
   value,
   onChange,
@@ -12,7 +12,8 @@ export default function Textbox({
   placeholder?: string;
 }) {
   return (
-    <textarea
+    <input
+      type="text"
       className={clsx(
         "inline-block w-full border bg-gray-100 p-2 placeholder:italic",
         className

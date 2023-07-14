@@ -13,7 +13,7 @@ export const strandRouter = createTRPCRouter({
         parent: null,
       },
       include: {
-        user: true,
+        author: true,
       },
     });
   }),
@@ -25,7 +25,12 @@ export const strandRouter = createTRPCRouter({
           id: input.id,
         },
         include: {
-          user: true,
+          author: true,
+          story: {
+            select: {
+              title: true,
+            },
+          },
           children: {
             select: {
               id: true,
@@ -60,30 +65,33 @@ export const strandRouter = createTRPCRouter({
         ancestors: ancestors as Pick<Strand, "id" | "content" | "parent_id">[],
       };
     }),
-  createStrand: protectedProcedure
+  createChildStrand: protectedProcedure
     .input(
       z.object({
         content: z.string().min(1).max(256),
-        parentId: z.string().optional(),
+        parentId: z.string(),
       })
     )
     .mutation(async ({ input, ctx }) => {
-      return ctx.prisma.strand.create({
-        data: {
-          content: input.content,
-          user: {
-            connect: {
-              id: ctx.session.user.id,
-            },
-          },
-          parent: input.parentId
-            ? {
-                connect: {
-                  id: input.parentId,
-                },
-              }
-            : undefined,
+      const parentStrand = await ctx.prisma.strand.findUnique({
+        where: {
+          id: input.parentId,
         },
       });
+
+      if (!parentStrand) {
+        throw new Error("Parent strand not found");
+      }
+
+      const childStrand = await ctx.prisma.strand.create({
+        data: {
+          content: input.content,
+          parent_id: input.parentId,
+          author_id: ctx.session.user.id,
+          story_id: parentStrand.story_id,
+        },
+      });
+
+      return childStrand;
     }),
 });

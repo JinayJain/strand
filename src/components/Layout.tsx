@@ -1,14 +1,15 @@
 import React from "react";
 import Head from "next/head";
-import { Cardo } from "next/font/google";
+import { Source_Serif_4 } from "next/font/google";
 import Link from "next/link";
 import Button from "./Button";
 import { signOut, useSession } from "next-auth/react";
 
-const cardo = Cardo({
+const baseFont = Source_Serif_4({
   weight: ["400", "700"],
+  style: ["normal", "italic"],
   subsets: ["latin"],
-  variable: "--font-cardo",
+  variable: "--font-base",
 });
 
 function Nav() {
@@ -16,17 +17,17 @@ function Nav() {
   return (
     <nav className="flex items-center justify-between border-b-2 border-gray-200 py-4">
       <Link href="/">
-        <h1 className="inline-block text-2xl font-bold">Strand</h1>
+        <h1 className="inline-block text-2xl font-bold hover:text-gray-500">
+          Strand
+        </h1>
       </Link>
 
       <div>
         {status === "authenticated" ? (
-          <>
-            <p className="mr-4 inline-block text-gray-500">
-              {session?.user?.name}
-            </p>
+          <div className="space-x-4">
+            <p className="inline-block text-gray-500">{session?.user?.name}</p>
             <Button onClick={signOut}>Sign out</Button>
-          </>
+          </div>
         ) : (
           <Link href="/api/auth/signin">
             <Button>Sign in</Button>
@@ -34,6 +35,22 @@ function Nav() {
         )}
       </div>
     </nav>
+  );
+}
+
+function Footer() {
+  return (
+    <footer className="border-t-2 border-gray-200 py-4">
+      <p className="text-center text-sm text-gray-500">
+        Created by{" "}
+        <a
+          href="https://jinay.dev/"
+          className="text-gray-500 underline hover:text-gray-700"
+        >
+          Jinay Jain
+        </a>
+      </p>
+    </footer>
   );
 }
 
@@ -46,13 +63,14 @@ export default function Layout({
 }) {
   return (
     <div
-      className={`${cardo.variable} mx-auto px-4 font-cardo max-md:container md:max-w-4xl`}
+      className={`${baseFont.variable} mx-auto flex min-h-screen flex-col px-4 font-cardo max-md:container md:max-w-4xl`}
     >
       <Head>
         <title>{pageTitle}</title>
       </Head>
       <Nav />
-      <main className="mt-4">{children}</main>
+      <main className="my-4 flex-1">{children}</main>
+      <Footer />
     </div>
   );
 }
