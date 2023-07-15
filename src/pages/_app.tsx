@@ -3,23 +3,30 @@ import { SessionProvider } from "next-auth/react";
 import { type AppType } from "next/app";
 import { api } from "@/utils/api";
 import "@/styles/globals.css";
-import Head from "next/head";
-import Script from "next/script";
+import PlausibleProvider from "next-plausible";
+import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
+import relativeTime from "dayjs/plugin/relativeTime";
 
 const MyApp: AppType<{ session: Session | null }> = ({
   Component,
   pageProps: { session, ...pageProps },
 }) => {
-  return (
-    <SessionProvider session={session}>
-      <Script
-        defer
-        data-domain="strand.lab.jinay.dev"
-        src="https://stat.lab.jinay.dev/js/script.js"
-      />
+  dayjs.extend(utc);
+  dayjs.extend(relativeTime);
 
-      <Component {...pageProps} />
-    </SessionProvider>
+  return (
+    <PlausibleProvider
+      domain="strand.jinay.dev"
+      customDomain="https://stat.lab.jinay.dev"
+      enabled={process.env.NODE_ENV === "production"}
+      trackOutboundLinks
+      trackLocalhost
+    >
+      <SessionProvider session={session}>
+        <Component {...pageProps} />
+      </SessionProvider>
+    </PlausibleProvider>
   );
 };
 

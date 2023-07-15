@@ -37,7 +37,11 @@ export default function StrandNew() {
         />
         <div className="space-x-2">
           <label>Active Date</label>
-          <input type="date" onChange={(e) => setActiveDate(e.target.value)} />
+          <input
+            type="date"
+            onChange={(e) => setActiveDate(e.target.value)}
+            className="border p-1"
+          />
         </div>
         <Button onClick={handleCreate}>Create</Button>
       </div>

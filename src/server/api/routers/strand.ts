@@ -5,6 +5,7 @@ import {
   protectedProcedure,
 } from "@/server/api/trpc";
 import type { Strand } from "@prisma/client";
+import { TRPCError } from "@trpc/server";
 
 export const strandRouter = createTRPCRouter({
   getRootStrands: publicProcedure.query(({ ctx }) => {
@@ -17,34 +18,26 @@ export const strandRouter = createTRPCRouter({
       },
     });
   }),
-  getStrandWithTree: publicProcedure
+  getStrand: publicProcedure
     .input(z.object({ id: z.string() }))
     .query(async ({ input, ctx }) => {
-      const strand = await ctx.prisma.strand.findUnique({
-        where: {
-          id: input.id,
-        },
-        include: {
-          author: true,
-          story: {
-            select: {
-              title: true,
+      const [strand, ancestors] = await ctx.prisma.$transaction([
+        ctx.prisma.strand.findUnique({
+          where: {
+            id: input.id,
+          },
+          include: {
+            author: true,
+            story: true,
+            children: {
+              select: {
+                id: true,
+                content: true,
+              },
             },
           },
-          children: {
-            select: {
-              id: true,
-              content: true,
-            },
-          },
-        },
-      });
-
-      if (!strand) {
-        throw new Error("Strand not found");
-      }
-
-      const ancestors = await ctx.prisma.$queryRaw`
+        }),
+        ctx.prisma.$queryRaw`
         WITH RECURSIVE ancestors AS (
           SELECT id, parent_id, content, 1 AS depth
           FROM strand
@@ -58,11 +51,29 @@ export const strandRouter = createTRPCRouter({
         FROM ancestors
         WHERE id != ${input.id}
         ORDER BY depth DESC
-      `;
+      `,
+      ]);
+
+      if (!strand) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Strand not found",
+        });
+      }
+
+      const hasContributed = ctx.session
+        ? (await ctx.prisma.strand.findFirst({
+            where: {
+              author_id: ctx.session.user.id,
+              story_id: strand.story_id,
+            },
+          })) !== null
+        : false;
 
       return {
         ...strand,
         ancestors: ancestors as Pick<Strand, "id" | "content" | "parent_id">[],
+        hasContributed,
       };
     }),
   createChildStrand: protectedProcedure
@@ -80,7 +91,24 @@ export const strandRouter = createTRPCRouter({
       });
 
       if (!parentStrand) {
-        throw new Error("Parent strand not found");
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Parent strand not found",
+        });
+      }
+
+      const contribution = await ctx.prisma.strand.findFirst({
+        where: {
+          author_id: ctx.session.user.id,
+          story_id: parentStrand.story_id,
+        },
+      });
+
+      if (contribution) {
+        throw new TRPCError({
+          code: "CONFLICT",
+          message: "User has already contributed to this story",
+        });
       }
 
       const childStrand = await ctx.prisma.strand.create({

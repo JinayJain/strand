@@ -5,6 +5,7 @@ import {
   protectedProcedure,
 } from "@/server/api/trpc";
 import { v4 as uuidv4 } from "uuid";
+import dayjs from "dayjs";
 
 export const storyRouter = createTRPCRouter({
   createStory: protectedProcedure
@@ -41,7 +42,7 @@ export const storyRouter = createTRPCRouter({
     return ctx.prisma.strandStory.findFirst({
       where: {
         active_date: {
-          lte: new Date(),
+          equals: dayjs().startOf("day").toDate(),
         },
       },
       include: {
@@ -74,6 +75,31 @@ export const storyRouter = createTRPCRouter({
           id: true,
         },
         skip: randomIndex,
+        take: 1,
+      });
+    }),
+
+  getStories: publicProcedure
+    .input(
+      z.object({
+        from: z.date().optional(),
+        to: z.date().optional(),
+      })
+    )
+    .query(async ({ input, ctx }) => {
+      return ctx.prisma.strandStory.findMany({
+        where: {
+          active_date: {
+            gte: input.from,
+            lte: input.to,
+          },
+        },
+        orderBy: {
+          active_date: "desc",
+        },
+        include: {
+          root: true,
+        },
       });
     }),
 });

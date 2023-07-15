@@ -40,8 +40,8 @@ function Nav() {
 
 function Footer() {
   return (
-    <footer className="border-t-2 border-gray-200 py-4">
-      <p className="text-center text-sm text-gray-500">
+    <footer className="flex justify-center space-x-2 border-t-2 border-gray-200 py-4">
+      <p className="text-sm text-gray-500">
         Created by{" "}
         <a
           href="https://jinay.dev/"
@@ -50,6 +50,16 @@ function Footer() {
           Jinay Jain
         </a>
       </p>
+
+      <span className="text-sm text-gray-500">•</span>
+
+      <a
+        className="text-sm text-gray-500 underline hover:text-gray-700"
+        href="https://forms.gle/6TrTAVSMXKsEJGsY8"
+        target="_blank"
+      >
+        Share feedback
+      </a>
     </footer>
   );
 }
