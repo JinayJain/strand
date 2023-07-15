@@ -22,7 +22,7 @@ export default function Home() {
   };
 
   return (
-    <Layout pageTitle="Strand">
+    <Layout pageTitle="Strand" redirectToOnboarding={false}>
       <p>
         Strand is a collaborative storytelling experience. Every day, a new
         prompt begins a story. Each person can make one contribution to an

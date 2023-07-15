@@ -58,7 +58,7 @@ export default function Strand() {
 
       {strandQuery && strandQuery.hasContributed ? (
         <p className="text-sm text-gray-500">
-          You&apos;ve already contributed to this story.
+          You&apos;ve already contributed to today&apos;s story.
         </p>
       ) : (
         <div className="mt-4 space-y-2">
@@ -67,7 +67,9 @@ export default function Strand() {
             onChange={setText}
             placeholder="What happens next?"
           />
-          <Button onClick={handleSubmit}>Add</Button>
+          <div className="flex items-center space-x-2">
+            <Button onClick={handleSubmit}>Add</Button>
+          </div>
         </div>
       )}
 
