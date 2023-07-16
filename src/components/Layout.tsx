@@ -93,7 +93,10 @@ export default function Layout({
         !session.data.user.name &&
         redirectToOnboarding
       ) {
-        await router.push(ONBOARDING_PAGE);
+        await router.push({
+          pathname: ONBOARDING_PAGE,
+          query: { redirect: router.asPath },
+        });
       }
     };
 

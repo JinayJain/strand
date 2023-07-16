@@ -10,6 +10,8 @@ import { useEffect, useState } from "react";
 export default function Onboarding() {
   const { data: session, update } = useSession();
   const router = useRouter();
+  const { redirect } = router.query;
+
   const [name, setName] = useState<string>("");
   const setUserName = api.user.setUserName.useMutation();
 
@@ -19,19 +21,17 @@ export default function Onboarding() {
     });
 
     await update();
-
-    await router.push("/");
   };
 
   useEffect(() => {
     const fn = async () => {
       if (session && hasOnboarded(session.user)) {
-        await router.push("/");
+        await router.replace(redirect ? String(redirect) : "/");
       }
     };
 
     void fn();
-  }, [router, session]);
+  }, [redirect, router, session]);
 
   return (
     <Layout pageTitle="Onboarding" redirectToOnboarding={false}>
