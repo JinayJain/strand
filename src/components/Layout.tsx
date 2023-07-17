@@ -5,6 +5,7 @@ import Link from "next/link";
 import Button from "./Button";
 import { signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
+import clsx from "clsx";
 
 const baseFont = Source_Serif_4({
   weight: ["400", "700"],
@@ -72,14 +73,42 @@ function Footer() {
   );
 }
 
+function Metadata() {
+  const PAGE_TITLE = "Strand - Daily stories written by strangers";
+  const PAGE_DESCRIPTION =
+    "Strand is a crowdsourced storytelling app that lets strangers write stories together, one sentence at a time.";
+  const PAGE_URL = "https://strand.jinay.dev/";
+  const PAGE_IMAGE = "https://strand.jinay.dev/api/og";
+  const PAGE_TWITTER_HANDLE = "@TheStrandApp";
+
+  return (
+    <Head>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <meta name="charset" content="utf-8" />
+      <meta property="og:title" content={PAGE_TITLE} />
+      <meta property="og:description" content={PAGE_DESCRIPTION} />
+      <meta property="og:type" content="website" />
+      <meta property="og:image" content={PAGE_IMAGE} />
+
+      <meta name="twitter:title" content={PAGE_TITLE} />
+      <meta name="twitter:description" content={PAGE_DESCRIPTION} />
+      <meta name="twitter:image" content={PAGE_IMAGE} />
+      <meta name="twitter:card" content="summary_large_image" />
+      <meta name="twitter:site" content={PAGE_TWITTER_HANDLE} />
+    </Head>
+  );
+}
+
 export default function Layout({
   children,
   pageTitle,
   redirectToOnboarding = true,
+  mainClass,
 }: {
   children: React.ReactNode;
   pageTitle: string;
   redirectToOnboarding?: boolean;
+  mainClass?: string;
 }) {
   const session = useSession();
   const router = useRouter();
@@ -110,8 +139,9 @@ export default function Layout({
       <Head>
         <title>{pageTitle}</title>
       </Head>
+      <Metadata />
       <Nav session={session} />
-      <main className="my-4 flex-1">{children}</main>
+      <main className={clsx("my-4 flex-1", mainClass)}>{children}</main>
       <Footer />
     </div>
   );

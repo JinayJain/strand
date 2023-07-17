@@ -27,7 +27,7 @@ export default function Archive() {
                   {dayjs(story.active_date).utc().format("MMMM D, YYYY")}
                 </p>
               )}
-              <div className="bg-gray-100 p-4 sm:flex sm:items-center">
+              <div className="bg-gray-100 p-4 sm:flex sm:items-center sm:space-x-2">
                 <div className="flex-1">
                   <h4 className="text-lg italic">{story.title}</h4>
                   <p className="text-gray-500">{story.root.content}</p>

@@ -6,6 +6,7 @@ import {
 } from "@/server/api/trpc";
 import type { Strand } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
+import dayjs from "dayjs";
 
 export const strandRouter = createTRPCRouter({
   getRootStrands: publicProcedure.query(({ ctx }) => {
@@ -70,10 +71,15 @@ export const strandRouter = createTRPCRouter({
           })) !== null
         : false;
 
+      const isActiveStory = dayjs(strand.story.active_date)
+        .utc()
+        .isSame(dayjs(), "day");
+
       return {
         ...strand,
         ancestors: ancestors as Pick<Strand, "id" | "content" | "parent_id">[],
         hasContributed,
+        isActiveStory,
       };
     }),
   createChildStrand: protectedProcedure
