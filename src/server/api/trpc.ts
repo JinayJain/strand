@@ -14,7 +14,7 @@ import superjson from "superjson";
 import { ZodError } from "zod";
 import { getServerAuthSession } from "@/server/auth";
 import { prisma } from "@/server/db";
-import { Permission, ROLE_PERMISSIONS } from "./permissions";
+import { type Permission, ROLE_PERMISSIONS } from "./permissions";
 
 /**
  * 1. CONTEXT
