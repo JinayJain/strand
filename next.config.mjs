@@ -20,6 +20,16 @@ const config = {
   },
 
   output: "standalone",
+
+  // async redirects() {
+  //   return [
+  //     {
+  //       source: "/s",
+  //       destination: "/archive",
+  //       permanent: true,
+  //     },
+  //   ];
+  // },
 };
 
 export default config;

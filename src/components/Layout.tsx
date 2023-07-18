@@ -6,6 +6,8 @@ import Button from "./Button";
 import { signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import clsx from "clsx";
+import { type Role } from "@prisma/client";
+import Page404 from "@/pages/404";
 
 const baseFont = Source_Serif_4({
   weight: ["400", "700"],
@@ -77,7 +79,6 @@ function Metadata() {
   const PAGE_TITLE = "Strand - Daily stories written by strangers";
   const PAGE_DESCRIPTION =
     "Strand is a crowdsourced storytelling app that lets strangers write stories together, one sentence at a time.";
-  const PAGE_URL = "https://strand.jinay.dev/";
   const PAGE_IMAGE = "https://strand.jinay.dev/api/og";
   const PAGE_TWITTER_HANDLE = "@TheStrandApp";
 
@@ -95,6 +96,28 @@ function Metadata() {
       <meta name="twitter:image" content={PAGE_IMAGE} />
       <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:site" content={PAGE_TWITTER_HANDLE} />
+
+      <link
+        rel="apple-touch-icon"
+        sizes="180x180"
+        href="/apple-touch-icon.png"
+      />
+      <link
+        rel="icon"
+        type="image/png"
+        sizes="32x32"
+        href="/favicon-32x32.png"
+      />
+      <link
+        rel="icon"
+        type="image/png"
+        sizes="16x16"
+        href="/favicon-16x16.png"
+      />
+      <link rel="manifest" href="/site.webmanifest" />
+      <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5" />
+      <meta name="msapplication-TileColor" content="#da532c" />
+      <meta name="theme-color" content="#ffffff" />
     </Head>
   );
 }
@@ -104,14 +127,17 @@ export default function Layout({
   pageTitle,
   redirectToOnboarding = true,
   mainClass,
+  allowedRoles,
 }: {
   children: React.ReactNode;
-  pageTitle: string;
+  pageTitle?: string;
   redirectToOnboarding?: boolean;
   mainClass?: string;
+  allowedRoles?: Role[];
 }) {
   const session = useSession();
   const router = useRouter();
+  const title = pageTitle ? `${pageTitle} / Strand` : "Strand";
 
   useEffect(() => {
     const fn = async () => {
@@ -132,12 +158,19 @@ export default function Layout({
     void fn();
   }, [redirectToOnboarding, router, session.data?.user.name, session.status]);
 
+  if (
+    allowedRoles &&
+    (!session.data?.user.role || !allowedRoles.includes(session.data.user.role))
+  ) {
+    return <Page404 />; // TODO: Redirect to 404 page instead
+  }
+
   return (
     <div
       className={`${baseFont.variable} mx-auto flex min-h-screen flex-col px-4 font-cardo max-md:container md:max-w-4xl`}
     >
       <Head>
-        <title>{pageTitle}</title>
+        <title>{title}</title>
       </Head>
       <Metadata />
       <Nav session={session} />

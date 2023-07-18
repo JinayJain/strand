@@ -1,10 +1,13 @@
 import { z } from "zod";
-import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
+import {
+  createTRPCRouter,
+  permissionedProcedureWithAuth,
+} from "@/server/api/trpc";
 import { TRPCError } from "@trpc/server";
 import { hasOnboarded } from "@/utils/user";
 
 export const userRouter = createTRPCRouter({
-  setUserName: protectedProcedure
+  setUserName: permissionedProcedureWithAuth("user:update:own")
     .input(
       z.object({
         name: z

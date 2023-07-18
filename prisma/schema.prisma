@@ -50,6 +50,12 @@ model StrandStory {
     @@map("strand_story")
 }
 
+enum Role {
+    ADMIN
+    USER
+    GUEST
+}
+
 // Necessary for Next auth
 model Account {
     id                String  @id @default(cuid())
@@ -83,9 +89,11 @@ model User {
     email         String?   @unique
     emailVerified DateTime?
     image         String?
-    accounts      Account[]
-    sessions      Session[]
-    strands       Strand[]
+    role          Role      @default(USER)
+
+    accounts Account[]
+    sessions Session[]
+    strands  Strand[]
 }
 
 model VerificationToken {

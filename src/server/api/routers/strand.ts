@@ -1,25 +1,15 @@
 import { z } from "zod";
 import {
   createTRPCRouter,
-  publicProcedure,
-  protectedProcedure,
+  permissionedProcedure,
+  permissionedProcedureWithAuth,
 } from "@/server/api/trpc";
 import type { Strand } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 import dayjs from "dayjs";
 
 export const strandRouter = createTRPCRouter({
-  getRootStrands: publicProcedure.query(({ ctx }) => {
-    return ctx.prisma.strand.findMany({
-      where: {
-        parent: null,
-      },
-      include: {
-        author: true,
-      },
-    });
-  }),
-  getStrand: publicProcedure
+  getStrand: permissionedProcedure("strand:read:any")
     .input(z.object({ id: z.string() }))
     .query(async ({ input, ctx }) => {
       const [strand, ancestors] = await ctx.prisma.$transaction([
@@ -71,9 +61,13 @@ export const strandRouter = createTRPCRouter({
           })) !== null
         : false;
 
-      const isActiveStory = dayjs(strand.story.active_date)
-        .utc()
-        .isSame(dayjs(), "day");
+      const isActiveStory = dayjs(strand.story.active_date).isSame(
+        dayjs(),
+        "day"
+      );
+
+      console.log(dayjs(strand.story.active_date));
+      console.log(dayjs().startOf("day").format());
 
       return {
         ...strand,
@@ -82,7 +76,7 @@ export const strandRouter = createTRPCRouter({
         isActiveStory,
       };
     }),
-  createChildStrand: protectedProcedure
+  createChildStrand: permissionedProcedureWithAuth("strand:create:own")
     .input(
       z.object({
         content: z.string().min(1).max(256),

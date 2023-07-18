@@ -2,6 +2,7 @@ import Button from "@/components/Button";
 import Layout from "@/components/Layout";
 import Textbox from "@/components/Textbox";
 import { api } from "@/utils/api";
+import dayjs from "dayjs";
 import { signIn, useSession } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -68,10 +69,17 @@ export default function Strand() {
   );
 
   return (
-    <Layout pageTitle="Strand" mainClass="space-y-4 mt-8">
+    <Layout pageTitle={strandQuery?.story.title} mainClass="space-y-4 mt-8">
       {strandQuery && (
         <div>
           <div className="mb-4">
+            {!strandQuery.isActiveStory && (
+              <h3 className="text-sm italic text-gray-500">
+                {dayjs(strandQuery.story.active_date)
+                  .utc()
+                  .format("MMMM D, YYYY")}
+              </h3>
+            )}
             <h1 className="text-2xl font-bold">{strandQuery.story.title}</h1>
 
             <h3 className="text-base italic text-gray-500">

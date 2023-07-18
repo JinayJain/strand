@@ -19,10 +19,12 @@ async function main() {
 
   const users = [];
   for (let i = 0; i < NUM_USERS; i++) {
+    const newUser = randUser();
     const user = await prisma.user.create({
       data: {
-        email: randUser().email,
-        name: randUser().username,
+        email: newUser.email,
+        name: newUser.username,
+        image: newUser.img,
       },
     });
 

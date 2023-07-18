@@ -35,10 +35,10 @@ export default async function handler() {
       >
         <div tw="m-12 p-12 flex-1 bg-stone-50 flex flex-col justify-center border border-gray-500">
           <h1 tw="text-8xl tracking-tight m-0">Strand</h1>
-          <h3 tw="font-bold tracking-tight text-4xl tracking-tight m-0 mt-2 text-gray-500">
+          <h3 tw="tracking-tight text-5xl tracking-tight m-0 mt-2 text-gray-500">
             Daily, crowdsourced storytelling with strangers
           </h3>
-          <p tw="text-2xl text-gray-500">Join for free today</p>
+          <p tw="text-4xl text-gray-500">Join for free today</p>
         </div>
       </div>
     ),

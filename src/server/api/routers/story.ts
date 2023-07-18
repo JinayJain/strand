@@ -1,27 +1,37 @@
 import { z } from "zod";
-import { createTRPCRouter, publicProcedure } from "@/server/api/trpc";
+import {
+  createTRPCRouter,
+  permissionedProcedure,
+  permissionedProcedureWithAuth,
+} from "@/server/api/trpc";
 import dayjs from "dayjs";
+import { v4 as uuidv4 } from "uuid";
 
 export const storyRouter = createTRPCRouter({
-  getCurrentStory: publicProcedure.query(async ({ ctx }) => {
-    return ctx.prisma.strandStory.findFirst({
-      where: {
-        active_date: {
-          equals: dayjs().startOf("day").toDate(),
-        },
-      },
-      include: {
-        root: {
-          select: {
-            id: true,
-            content: true,
+  getCurrentStory: permissionedProcedure("strandStory:read:any").query(
+    async ({ ctx }) => {
+      return ctx.prisma.strandStory.findFirst({
+        where: {
+          active_date: {
+            equals: dayjs.utc().startOf("day").toDate(),
           },
         },
-      },
-    });
-  }),
+        include: {
+          root: {
+            select: {
+              id: true,
+              content: true,
+            },
+          },
+        },
+      });
+    }
+  ),
 
-  getRandomStoryStrand: publicProcedure
+  getRandomStoryStrand: permissionedProcedure(
+    "strand:read:any",
+    "strandStory:read:any"
+  )
     .input(z.object({ id: z.string() }))
     .mutation(async ({ input, ctx }) => {
       const storyStrandCount = await ctx.prisma.strand.count({
@@ -44,7 +54,7 @@ export const storyRouter = createTRPCRouter({
       });
     }),
 
-  getStories: publicProcedure
+  getStories: permissionedProcedure("strandStory:read:any")
     .input(
       z.object({
         from: z.date().optional(),
@@ -61,6 +71,36 @@ export const storyRouter = createTRPCRouter({
         },
         orderBy: {
           active_date: "desc",
+        },
+        include: {
+          root: true,
+        },
+      });
+    }),
+
+  createStory: permissionedProcedureWithAuth("strandStory:create:own")
+    .input(
+      z.object({
+        title: z.string().nonempty().max(256),
+        prompt: z.string().nonempty(),
+        activeDate: z.date().optional(),
+      })
+    )
+    .mutation(async ({ input, ctx }) => {
+      const storyId = uuidv4();
+
+      return ctx.prisma.strandStory.create({
+        data: {
+          id: storyId,
+          title: input.title,
+          active_date: input.activeDate,
+          root: {
+            create: {
+              story_id: storyId,
+              content: input.prompt,
+              author_id: ctx.session.user.id,
+            },
+          },
         },
         include: {
           root: true,

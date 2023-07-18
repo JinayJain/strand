@@ -14,6 +14,7 @@ import superjson from "superjson";
 import { ZodError } from "zod";
 import { getServerAuthSession } from "@/server/auth";
 import { prisma } from "@/server/db";
+import { Permission, ROLE_PERMISSIONS } from "./permissions";
 
 /**
  * 1. CONTEXT
@@ -111,6 +112,7 @@ const enforceUserIsAuthed = t.middleware(({ ctx, next }) => {
   if (!ctx.session || !ctx.session.user) {
     throw new TRPCError({ code: "UNAUTHORIZED" });
   }
+
   return next({
     ctx: {
       // infers the `session` as non-nullable
@@ -118,6 +120,22 @@ const enforceUserIsAuthed = t.middleware(({ ctx, next }) => {
     },
   });
 });
+
+const enforceUserHasPermission = (...permissions: Permission[]) =>
+  t.middleware(({ ctx, next }) => {
+    const role = ctx.session?.user.role ?? "GUEST";
+
+    const scheme = ROLE_PERMISSIONS[role];
+    const hasPermission = permissions.every((permission) =>
+      scheme.can(permission)
+    );
+
+    if (!hasPermission) {
+      throw new TRPCError({ code: "FORBIDDEN" });
+    }
+
+    return next();
+  });
 
 /**
  * Protected (authenticated) procedure
@@ -128,3 +146,11 @@ const enforceUserIsAuthed = t.middleware(({ ctx, next }) => {
  * @see https://trpc.io/docs/procedures
  */
 export const protectedProcedure = t.procedure.use(enforceUserIsAuthed);
+
+export const permissionedProcedure = (...permissions: Permission[]) =>
+  t.procedure.use(enforceUserHasPermission(...permissions));
+
+export const permissionedProcedureWithAuth = (...permissions: Permission[]) =>
+  t.procedure
+    .use(enforceUserHasPermission(...permissions))
+    .use(enforceUserIsAuthed);
