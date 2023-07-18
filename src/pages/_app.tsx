@@ -7,6 +7,7 @@ import PlausibleProvider from "next-plausible";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import relativeTime from "dayjs/plugin/relativeTime";
+import Metadata from "@/components/Metadata";
 
 const MyApp: AppType<{ session: Session | null }> = ({
   Component,
@@ -22,6 +23,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
       enabled={process.env.NODE_ENV === "production"}
       trackOutboundLinks
     >
+      <Metadata />
       <SessionProvider session={session}>
         <Component {...pageProps} />
       </SessionProvider>

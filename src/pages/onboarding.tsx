@@ -16,9 +16,13 @@ export default function Onboarding() {
   const setUserName = api.user.setUserName.useMutation();
 
   const handleSubmit = async () => {
-    await setUserName.mutateAsync({
-      username: name,
-    });
+    try {
+      await setUserName.mutateAsync({
+        username: name,
+      });
+    } catch (e) {
+      console.log(e);
+    }
 
     await update();
   };
@@ -38,7 +42,13 @@ export default function Onboarding() {
       <div className="space-y-2">
         <h1 className="text-xl font-bold">Just one more thing...</h1>
         <p>What is your name?</p>
-        <TextInput placeholder="Username" value={name} onChange={setName} />
+        <TextInput
+          placeholder="Username"
+          value={name}
+          onChange={setName}
+          hint="This will be displayed publicly."
+          error={setUserName.error?.data?.zodError?.fieldErrors?.username?.[0]}
+        />
         <Button onClick={handleSubmit}>Continue</Button>
       </div>
     </Layout>

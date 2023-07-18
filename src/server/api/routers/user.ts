@@ -16,7 +16,7 @@ export const userRouter = createTRPCRouter({
           .max(256)
           .regex(/^[a-zA-Z0-9_]+$/, {
             message:
-              "Name should only contain letters, numbers, and underscores.",
+              "Username should only contain letters, numbers, and underscores.",
           }),
       })
     )

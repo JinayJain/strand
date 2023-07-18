@@ -1,4 +1,4 @@
-import { Role } from "@prisma/client";
+import { type Role } from "@prisma/client";
 
 type Entity = "strand" | "strandStory" | "user";
 type Action = "create" | "read" | "update" | "delete";
