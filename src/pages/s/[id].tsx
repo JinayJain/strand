@@ -60,7 +60,7 @@ export default function Strand() {
         } crowdsourced story "${strandQuery.story.title}" written by ${
           strandQuery.ancestors.length + 1
         } strangers on Strand.`
-    : "";
+    : "" + "\n\n";
 
   const shareUrl = encodeURI(
     `https://twitter.com/share?url=${
@@ -83,7 +83,7 @@ export default function Strand() {
             <h1 className="text-2xl font-bold">{strandQuery.story.title}</h1>
 
             <h3 className="text-base italic text-gray-500">
-              by {strandQuery.author.name}
+              by {strandQuery.author.username ?? "Anonymous"}
               {strandQuery.ancestors.length > 0 && (
                 <> and {strandQuery.ancestors.length} more</>
               )}

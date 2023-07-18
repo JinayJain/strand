@@ -8,7 +8,9 @@ import {
 // import DiscordProvider from "next-auth/providers/discord";
 import GoogleProvider from "next-auth/providers/google";
 import EmailProvider from "next-auth/providers/email";
+import DiscordProvider from "next-auth/providers/discord";
 import CognitoProvider from "next-auth/providers/cognito";
+import GithubProvider from "next-auth/providers/github";
 import { env } from "@/env.mjs";
 import { prisma } from "@/server/db";
 import { type Role } from "@prisma/client";
@@ -25,12 +27,14 @@ declare module "next-auth" {
       id: string;
       // ...other properties
       role: Role;
+      username?: string;
     } & DefaultSession["user"];
   }
 
   interface User {
     //   // ...other properties
     role: Role;
+    username?: string;
   }
 }
 
@@ -48,19 +52,24 @@ export const authOptions: NextAuthOptions = {
           ...session.user,
           id: user.id,
           role: user.role,
+          username: user.username,
         },
       };
     },
   },
   adapter: PrismaAdapter(prisma),
   providers: [
-    // DiscordProvider({
-    //   clientId: env.DISCORD_CLIENT_ID,
-    //   clientSecret: env.DISCORD_CLIENT_SECRET,
-    // }),
+    DiscordProvider({
+      clientId: env.DISCORD_CLIENT_ID,
+      clientSecret: env.DISCORD_CLIENT_SECRET,
+    }),
     GoogleProvider({
       clientId: env.GOOGLE_CLIENT_ID,
       clientSecret: env.GOOGLE_CLIENT_SECRET,
+    }),
+    GithubProvider({
+      clientId: env.GITHUB_CLIENT_ID,
+      clientSecret: env.GITHUB_CLIENT_SECRET,
     }),
     // EmailProvider({
     //   server: {
@@ -73,11 +82,11 @@ export const authOptions: NextAuthOptions = {
     //   },
     //   from: env.EMAIL_FROM,
     // }),
-    CognitoProvider({
-      clientId: env.COGNITO_CLIENT_ID,
-      clientSecret: env.COGNITO_CLIENT_SECRET,
-      issuer: env.COGNITO_ISSUER,
-    }),
+    // CognitoProvider({
+    //   clientId: env.COGNITO_CLIENT_ID,
+    //   clientSecret: env.COGNITO_CLIENT_SECRET,
+    //   issuer: env.COGNITO_ISSUER,
+    // }),
     /**
      * ...add more providers here.
      *
@@ -88,6 +97,10 @@ export const authOptions: NextAuthOptions = {
      * @see https://next-auth.js.org/providers/github
      */
   ],
+  theme: {
+    colorScheme: "light",
+    logo: "/feather-icon.svg",
+  },
 };
 
 /**

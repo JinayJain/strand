@@ -30,6 +30,9 @@ export const env = createEnv({
     COGNITO_ISSUER: z.string().min(1),
     COGNITO_CLIENT_ID: z.string().min(1),
     COGNITO_CLIENT_SECRET: z.string().min(1),
+
+    GITHUB_CLIENT_ID: z.string().min(1),
+    GITHUB_CLIENT_SECRET: z.string().min(1),
   },
 
   /**
@@ -57,6 +60,8 @@ export const env = createEnv({
     COGNITO_ISSUER: process.env.COGNITO_ISSUER,
     COGNITO_CLIENT_ID: process.env.COGNITO_CLIENT_ID,
     COGNITO_CLIENT_SECRET: process.env.COGNITO_CLIENT_SECRET,
+    GITHUB_CLIENT_ID: process.env.GITHUB_CLIENT_ID,
+    GITHUB_CLIENT_SECRET: process.env.GITHUB_CLIENT_SECRET,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation.

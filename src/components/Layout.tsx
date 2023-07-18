@@ -8,6 +8,7 @@ import { useRouter } from "next/router";
 import clsx from "clsx";
 import { type Role } from "@prisma/client";
 import Page404 from "@/pages/404";
+import { hasOnboarded } from "@/utils/user";
 
 const baseFont = Source_Serif_4({
   weight: ["400", "700"],
@@ -16,8 +17,7 @@ const baseFont = Source_Serif_4({
   variable: "--font-base",
 });
 
-function Nav({ session }: { session: ReturnType<typeof useSession> }) {
-  const { data: sessionData, status } = session;
+function Nav({ session }: { session: ReturnType<typeof useSession>["data"] }) {
   return (
     <nav className="flex items-center justify-between border-b-2 border-gray-200 py-4">
       <Link href="/">
@@ -27,10 +27,10 @@ function Nav({ session }: { session: ReturnType<typeof useSession> }) {
       </Link>
 
       <div>
-        {status === "authenticated" ? (
+        {session ? (
           <div className="space-x-4">
             <p className="inline-block text-gray-500">
-              {sessionData.user.name}
+              {session.user.username}
             </p>
             <Button onClick={signOut}>Sign out</Button>
           </div>
@@ -135,7 +135,7 @@ export default function Layout({
   mainClass?: string;
   allowedRoles?: Role[];
 }) {
-  const session = useSession();
+  const { data: session, status } = useSession();
   const router = useRouter();
   const title = pageTitle ? `${pageTitle} / Strand` : "Strand";
 
@@ -144,8 +144,8 @@ export default function Layout({
       const ONBOARDING_PAGE = "/onboarding";
 
       if (
-        session.status === "authenticated" &&
-        !session.data.user.name &&
+        status === "authenticated" &&
+        !hasOnboarded(session.user) &&
         redirectToOnboarding
       ) {
         await router.push({
@@ -156,12 +156,13 @@ export default function Layout({
     };
 
     void fn();
-  }, [redirectToOnboarding, router, session.data?.user.name, session.status]);
+  }, [redirectToOnboarding, router, session?.user, status]);
 
-  if (
-    allowedRoles &&
-    (!session.data?.user.role || !allowedRoles.includes(session.data.user.role))
-  ) {
+  if (status === "loading") {
+    return <div />;
+  }
+
+  if (allowedRoles && !allowedRoles.includes(session?.user.role ?? "GUEST")) {
     return <Page404 />; // TODO: Redirect to 404 page instead
   }
 

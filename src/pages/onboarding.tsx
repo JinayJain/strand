@@ -17,7 +17,7 @@ export default function Onboarding() {
 
   const handleSubmit = async () => {
     await setUserName.mutateAsync({
-      name,
+      username: name,
     });
 
     await update();
@@ -38,7 +38,7 @@ export default function Onboarding() {
       <div className="space-y-2">
         <h1 className="text-xl font-bold">Just one more thing...</h1>
         <p>What is your name?</p>
-        <TextInput placeholder="Name" value={name} onChange={setName} />
+        <TextInput placeholder="Username" value={name} onChange={setName} />
         <Button onClick={handleSubmit}>Continue</Button>
       </div>
     </Layout>

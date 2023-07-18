@@ -10,7 +10,7 @@ export const userRouter = createTRPCRouter({
   setUserName: permissionedProcedureWithAuth("user:update:own")
     .input(
       z.object({
-        name: z
+        username: z
           .string()
           .nonempty()
           .max(256)
@@ -33,7 +33,7 @@ export const userRouter = createTRPCRouter({
           id: ctx.session.user.id,
         },
         data: {
-          name: input.name,
+          username: input.username,
         },
       });
     }),
