@@ -1,5 +1,6 @@
 import Button from "@/components/Button";
 import Layout from "@/components/Layout";
+import { StoryCard } from "@/components/StoryCard";
 import TextInput from "@/components/TextInput";
 import Textbox from "@/components/Textbox";
 import { api } from "@/utils/api";
@@ -7,8 +8,9 @@ import { useRouter } from "next/router";
 import { useState } from "react";
 
 export default function Admin() {
+  const { data: stories, refetch } = api.story.getStories.useQuery({});
+
   const createStory = api.story.createStory.useMutation();
-  const router = useRouter();
 
   const [title, setTitle] = useState<string>("");
   const [text, setText] = useState<string>("");
@@ -23,7 +25,12 @@ export default function Admin() {
       activeDate: activeDateObj,
     });
 
-    await router.push(`/s/${result.root.id}`);
+    if (result) {
+      setTitle("");
+      setText("");
+      setActiveDate(undefined);
+      await refetch();
+    }
   };
 
   return (
@@ -46,6 +53,21 @@ export default function Admin() {
           />
         </div>
         <Button onClick={handleCreate}>Create</Button>
+      </div>
+
+      <h1 className="mb-4 mt-8 text-xl font-bold">All Stories</h1>
+      <div className="space-y-6">
+        {stories &&
+          stories.map((story) => (
+            <StoryCard
+              key={story.id}
+              id={story.id}
+              rootId={story.root.id}
+              title={story.title}
+              activeDate={story.active_date}
+              prompt={story.root.content}
+            />
+          ))}
       </div>
     </Layout>
   );

@@ -14,7 +14,7 @@ import superjson from "superjson";
 import { ZodError } from "zod";
 import { getServerAuthSession } from "@/server/auth";
 import { prisma } from "@/server/db";
-import { type Permission, ROLE_PERMISSIONS } from "./permissions";
+import { type Permission, hasPermission } from "./permissions";
 
 /**
  * 1. CONTEXT
@@ -122,14 +122,9 @@ const enforceUserIsAuthed = t.middleware(({ ctx, next }) => {
 
 const enforceUserHasPermission = (...permissions: Permission[]) =>
   t.middleware(({ ctx, next }) => {
-    const role = ctx.session?.user.role ?? "GUEST";
+    const role = ctx.session?.user.role;
 
-    const scheme = ROLE_PERMISSIONS[role];
-    const hasPermission = permissions.every((permission) =>
-      scheme.can(permission)
-    );
-
-    if (!hasPermission) {
+    if (!hasPermission(role, ...permissions)) {
       throw new TRPCError({ code: "FORBIDDEN" });
     }
 

@@ -78,9 +78,11 @@ export default function Strand() {
           <div className="mb-4">
             {!strandQuery.isActiveStory && (
               <h3 className="text-sm italic text-gray-500">
-                {dayjs(strandQuery.story.active_date)
-                  .utc()
-                  .format("MMMM D, YYYY")}
+                {strandQuery.story.active_date
+                  ? dayjs(strandQuery.story.active_date)
+                      .utc()
+                      .format("MMMM D, YYYY")
+                  : "Unscheduled"}
               </h3>
             )}
             <h1 className="text-2xl font-bold">{strandQuery.story.title}</h1>

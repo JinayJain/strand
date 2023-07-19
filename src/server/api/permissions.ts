@@ -6,9 +6,9 @@ type Scope = "own" | "any";
 
 type EntityPermission = `${Entity}:${Action}:${Scope}`;
 
-// type CustomPermission = "something:custom";
+type CustomPermission = "strandStory:read:future";
 
-export type Permission = EntityPermission; // | CustomPermission
+export type Permission = EntityPermission | CustomPermission;
 
 class PermissionScheme {
   constructor(public permissions: Permission[]) {}
@@ -36,12 +36,22 @@ const USER_PERMISSIONS = scheme([
   "user:update:own",
 ]).extend(GUEST_PERMISSIONS);
 
-const ADMIN_PERMISSIONS = scheme(["strandStory:create:own"]).extend(
-  USER_PERMISSIONS
-);
+const ADMIN_PERMISSIONS = scheme([
+  "strandStory:create:own",
+  "strandStory:read:future",
+]).extend(USER_PERMISSIONS);
 
-export const ROLE_PERMISSIONS: Record<Role, PermissionScheme> = {
+const ROLE_PERMISSIONS: Record<Role, PermissionScheme> = {
   GUEST: GUEST_PERMISSIONS,
   USER: USER_PERMISSIONS,
   ADMIN: ADMIN_PERMISSIONS,
 };
+
+export function hasPermission(
+  role: Role | undefined,
+  ...permissions: Permission[]
+): boolean {
+  return permissions.every((permission) =>
+    ROLE_PERMISSIONS[role ?? "GUEST"].can(permission)
+  );
+}

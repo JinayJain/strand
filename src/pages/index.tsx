@@ -41,12 +41,12 @@ export default function Home() {
             <p className="text-gray-500">{storyQuery.current.root.content}</p>
             <div className="mt-4 flex flex-col space-y-2 sm:flex-row sm:space-x-2 sm:space-y-0">
               <Link href={`/s/${storyQuery.current.root.id}`}>
-                <Button className="plausible-event-name=click-continue-story w-full border-gray-500 sm:w-auto">
+                <Button className="plausible-event-name=click-continue-story w-full sm:w-auto">
                   Continue the story
                 </Button>
               </Link>
               <Button
-                className="plausible-event-name=click-random-storyline w-full border-gray-500 sm:w-auto"
+                className="plausible-event-name=click-random-storyline w-full sm:w-auto"
                 onClick={handleRandomStory(storyQuery.current.id)}
               >
                 Random storyline

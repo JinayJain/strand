@@ -16,7 +16,7 @@ export default function Button({
   return (
     <button
       className={clsx(
-        "inline-flex items-center justify-center border p-2 text-center hover:bg-gray-200",
+        "inline-flex items-center justify-center border border-gray-900 border-opacity-30 p-2 text-center hover:bg-gray-200",
         className
       )}
       onClick={onClick}

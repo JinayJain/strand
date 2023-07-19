@@ -6,6 +6,7 @@ import {
 } from "@/server/api/trpc";
 import dayjs from "dayjs";
 import { v4 as uuidv4 } from "uuid";
+import { hasPermission } from "../permissions";
 
 export const storyRouter = createTRPCRouter({
   getCurrentStory: permissionedProcedure("strandStory:read:any").query(
@@ -82,11 +83,18 @@ export const storyRouter = createTRPCRouter({
       })
     )
     .query(async ({ input, ctx }) => {
+      const endDate = hasPermission(
+        ctx.session?.user.role,
+        "strandStory:read:future"
+      )
+        ? input.to
+        : dayjs.utc().startOf("day").toDate();
+
       return ctx.prisma.strandStory.findMany({
         where: {
           active_date: {
             gte: input.from,
-            lte: input.to,
+            lte: endDate,
           },
         },
         orderBy: {

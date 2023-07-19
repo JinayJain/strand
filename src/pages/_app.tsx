@@ -22,6 +22,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
       customDomain="https://stat.lab.jinay.dev"
       enabled={process.env.NODE_ENV === "production"}
       trackOutboundLinks
+      taggedEvents
     >
       <Metadata />
       <SessionProvider session={session}>
