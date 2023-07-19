@@ -2,13 +2,15 @@ import React, { useEffect } from "react";
 import Head from "next/head";
 import { Source_Serif_4 } from "next/font/google";
 import Link from "next/link";
+import Image from "next/image";
 import Button from "./Button";
-import { signOut, useSession } from "next-auth/react";
+import { signIn, signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import clsx from "clsx";
 import { type Role } from "@prisma/client";
 import Page404 from "@/pages/404";
 import { hasOnboarded } from "@/utils/user";
+import { FEEDBACK_URL } from "@/utils/consts";
 
 const baseFont = Source_Serif_4({
   weight: ["400", "700"],
@@ -19,9 +21,13 @@ const baseFont = Source_Serif_4({
 
 function Nav({ session }: { session: ReturnType<typeof useSession>["data"] }) {
   return (
-    <nav className="flex items-center justify-between border-b-2 border-gray-200 py-4">
-      <Link href="/">
-        <h1 className="inline-block text-2xl font-bold hover:text-gray-500">
+    <nav className="relative flex items-center justify-between border-b-2 border-gray-200 py-4">
+      <Link href="/" className="flex items-center">
+        <div className="relative inline-block aspect-square h-8 sm:hidden">
+          <Image src="/feather-icon.svg" fill alt="Logo" />
+        </div>
+
+        <h1 className="hidden text-2xl font-bold hover:text-gray-500 sm:inline-block">
           Strand
         </h1>
       </Link>
@@ -35,9 +41,7 @@ function Nav({ session }: { session: ReturnType<typeof useSession>["data"] }) {
             <Button onClick={signOut}>Sign out</Button>
           </div>
         ) : (
-          <Link href="/api/auth/signin">
-            <Button>Sign in</Button>
-          </Link>
+          <Button onClick={signIn}>Sign in</Button>
         )}
       </div>
     </nav>
@@ -46,7 +50,7 @@ function Nav({ session }: { session: ReturnType<typeof useSession>["data"] }) {
 
 function Footer() {
   return (
-    <footer className="flex justify-center space-x-2 border-t-2 border-gray-200 py-4">
+    <footer className="flex flex-col items-center justify-center space-y-2 border-t-2 border-gray-200 py-4 sm:flex-row sm:space-x-2 sm:space-y-0">
       <p className="text-sm text-gray-500">
         Created by{" "}
         <a
@@ -58,7 +62,7 @@ function Footer() {
       </p>
 
       <Link
-        className="text-sm text-gray-500 hover:text-yellow-500"
+        className="hidden text-sm text-gray-500 hover:text-yellow-500 sm:inline-block"
         href="/cool-people-only"
       >
         •
@@ -66,7 +70,7 @@ function Footer() {
 
       <a
         className="text-sm text-gray-500 underline hover:text-gray-700"
-        href="https://forms.gle/6TrTAVSMXKsEJGsY8"
+        href={FEEDBACK_URL}
         target="_blank"
       >
         Share feedback
@@ -94,16 +98,14 @@ export default function Layout({
 
   useEffect(() => {
     const fn = async () => {
-      const ONBOARDING_PAGE = "/onboarding";
-
       if (
         status === "authenticated" &&
         !hasOnboarded(session.user) &&
         redirectToOnboarding
       ) {
         await router.push({
-          pathname: ONBOARDING_PAGE,
-          query: { redirect: router.asPath },
+          pathname: "/onboarding",
+          query: { callbackUrl: router.asPath },
         });
       }
     };
@@ -111,7 +113,7 @@ export default function Layout({
     void fn();
   }, [redirectToOnboarding, router, session?.user, status]);
 
-  if (status === "loading") {
+  if (allowedRoles && status === "loading") {
     return <div />;
   }
 

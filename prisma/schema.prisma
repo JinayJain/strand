@@ -25,11 +25,12 @@ model Strand {
     created_at DateTime @default(now())
     updated_at DateTime @updatedAt
 
-    author     User         @relation(fields: [author_id], references: [id], onDelete: Cascade)
-    parent     Strand?      @relation("strand_tree", fields: [parent_id], references: [id])
-    children   Strand[]     @relation("strand_tree")
-    root_story StrandStory? @relation("story_root_strand")
-    story      StrandStory  @relation("strand_story", fields: [story_id], references: [id], onDelete: NoAction)
+    author     User           @relation(fields: [author_id], references: [id], onDelete: Cascade)
+    parent     Strand?        @relation("strand_tree", fields: [parent_id], references: [id])
+    children   Strand[]       @relation("strand_tree")
+    root_story StrandStory?   @relation("story_root_strand")
+    story      StrandStory    @relation("strand_story", fields: [story_id], references: [id], onDelete: NoAction)
+    reports    StrandReport[]
 
     @@map("strand")
 }
@@ -47,6 +48,21 @@ model StrandStory {
     strands Strand[] @relation("strand_story")
 
     @@map("strand_story")
+}
+
+model StrandReport {
+    id        String  @id @default(uuid())
+    user_id   String
+    strand_id String
+    reason    String?
+
+    created_at DateTime @default(now())
+    updated_at DateTime @updatedAt
+
+    author User   @relation(fields: [user_id], references: [id], onDelete: Cascade)
+    strand Strand @relation(fields: [strand_id], references: [id], onDelete: Cascade)
+
+    @@map("strand_report")
 }
 
 enum Role {
@@ -91,9 +107,13 @@ model User {
     image         String?
     role          Role      @default(USER)
 
+    created_at DateTime @default(now())
+    updated_at DateTime @updatedAt
+
     accounts Account[]
     sessions Session[]
     strands  Strand[]
+    reports  StrandReport[]
 }
 
 model VerificationToken {

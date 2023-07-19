@@ -98,6 +98,10 @@ export const authOptions: NextAuthOptions = {
     colorScheme: "light",
     logo: "/feather-icon.svg",
   },
+  pages: {
+    signIn: "/login",
+    newUser: "/onboarding",
+  },
 };
 
 /**

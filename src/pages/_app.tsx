@@ -13,8 +13,8 @@ const MyApp: AppType<{ session: Session | null }> = ({
   Component,
   pageProps: { session, ...pageProps },
 }) => {
-  // dayjs.extend(utc);
-  // dayjs.extend(relativeTime);
+  dayjs.extend(utc);
+  dayjs.extend(relativeTime);
 
   return (
     <PlausibleProvider

@@ -65,9 +65,6 @@ export const strandRouter = createTRPCRouter({
         .utc(strand.story.active_date)
         .isSame(dayjs(), "day");
 
-      console.log(dayjs(strand.story.active_date));
-      console.log(dayjs().startOf("day").format());
-
       return {
         ...strand,
         ancestors: ancestors as Pick<Strand, "id" | "content" | "parent_id">[],
@@ -120,5 +117,21 @@ export const strandRouter = createTRPCRouter({
       });
 
       return childStrand;
+    }),
+  reportStrand: permissionedProcedureWithAuth("strand:read:any")
+    .input(
+      z.object({
+        id: z.string(),
+        reason: z.string().min(1).optional(),
+      })
+    )
+    .mutation(async ({ input, ctx }) => {
+      return ctx.prisma.strandReport.create({
+        data: {
+          user_id: ctx.session.user.id,
+          reason: input.reason,
+          strand_id: input.id,
+        },
+      });
     }),
 });

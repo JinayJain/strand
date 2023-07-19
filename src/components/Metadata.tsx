@@ -1,12 +1,12 @@
+import {
+  PAGE_DESCRIPTION,
+  PAGE_IMAGE,
+  PAGE_TITLE,
+  PAGE_TWITTER_HANDLE,
+} from "@/utils/consts";
 import Head from "next/head";
 
 export default function Metadata() {
-  const PAGE_TITLE = "Strand - Daily stories written by strangers";
-  const PAGE_DESCRIPTION =
-    "Strand is a crowdsourced storytelling app that lets strangers write stories together, one sentence at a time.";
-  const PAGE_IMAGE = "https://strand.jinay.dev/api/og";
-  const PAGE_TWITTER_HANDLE = "@TheStrandApp";
-
   return (
     <Head>
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
