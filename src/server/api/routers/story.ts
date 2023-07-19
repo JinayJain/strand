@@ -10,21 +10,41 @@ import { v4 as uuidv4 } from "uuid";
 export const storyRouter = createTRPCRouter({
   getCurrentStory: permissionedProcedure("strandStory:read:any").query(
     async ({ ctx }) => {
-      return ctx.prisma.strandStory.findFirst({
-        where: {
-          active_date: {
-            equals: dayjs.utc().startOf("day").toDate(),
-          },
-        },
-        include: {
-          root: {
-            select: {
-              id: true,
-              content: true,
+      const [current, next] = await ctx.prisma.$transaction([
+        ctx.prisma.strandStory.findFirst({
+          where: {
+            active_date: {
+              equals: dayjs.utc().startOf("day").toDate(),
             },
           },
-        },
-      });
+          include: {
+            root: {
+              select: {
+                id: true,
+                content: true,
+              },
+            },
+          },
+        }),
+        ctx.prisma.strandStory.findFirst({
+          where: {
+            active_date: {
+              gt: dayjs.utc().startOf("day").toDate(),
+            },
+          },
+          orderBy: {
+            active_date: "asc",
+          },
+          select: {
+            active_date: true,
+          },
+        }),
+      ]);
+
+      return {
+        current,
+        nextDate: next?.active_date,
+      };
     }
   ),
 

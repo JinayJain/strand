@@ -1,11 +1,12 @@
 import Button from "@/components/Button";
 import Layout from "@/components/Layout";
 import { api } from "@/utils/api";
+import dayjs from "dayjs";
 import Link from "next/link";
 import { useRouter } from "next/router";
 
 export default function Home() {
-  const { data: currentStory } = api.story.getCurrentStory.useQuery();
+  const { data: storyQuery } = api.story.getCurrentStory.useQuery();
   const randomStoryMutation = api.story.getRandomStoryStrand.useMutation();
   const router = useRouter();
 
@@ -31,22 +32,22 @@ export default function Home() {
         of interconnected storylines.
       </p>
 
-      {currentStory && (
+      {storyQuery?.current && (
         <div className="mt-4 space-y-2">
           <h3 className="text-xl font-bold">Today&apos;s Prompt</h3>
 
           <div className="bg-gray-100 p-4">
-            <h4 className="text-lg italic">{currentStory.title}</h4>
-            <p className="text-gray-500">{currentStory.root.content}</p>
+            <h4 className="text-lg italic">{storyQuery.current.title}</h4>
+            <p className="text-gray-500">{storyQuery.current.root.content}</p>
             <div className="mt-4 flex flex-col space-y-2 sm:flex-row sm:space-x-2 sm:space-y-0">
-              <Link href={`/s/${currentStory.root.id}`}>
+              <Link href={`/s/${storyQuery.current.root.id}`}>
                 <Button className="plausible-event-name=click-continue-story w-full border-gray-500 sm:w-auto">
                   Continue the story
                 </Button>
               </Link>
               <Button
                 className="plausible-event-name=click-random-storyline w-full border-gray-500 sm:w-auto"
-                onClick={handleRandomStory(currentStory.id)}
+                onClick={handleRandomStory(storyQuery.current.id)}
               >
                 Random storyline
               </Button>
@@ -69,6 +70,14 @@ export default function Home() {
         >
           View the archive
         </Link>
+        {storyQuery?.nextDate && (
+          <>
+            <span className="text-sm text-gray-500">•</span>
+            <p className="text-sm text-gray-500">
+              Next prompt {dayjs(storyQuery.nextDate).fromNow()}
+            </p>
+          </>
+        )}
       </div>
     </Layout>
   );

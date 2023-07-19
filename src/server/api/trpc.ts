@@ -105,7 +105,6 @@ export const createTRPCRouter = t.router;
  * guarantee that a user querying is authorized, but you can still access user session data if they
  * are logged in.
  */
-export const publicProcedure = t.procedure;
 
 /** Reusable middleware that enforces users are logged in before running the procedure. */
 const enforceUserIsAuthed = t.middleware(({ ctx, next }) => {
@@ -145,12 +144,12 @@ const enforceUserHasPermission = (...permissions: Permission[]) =>
  *
  * @see https://trpc.io/docs/procedures
  */
-export const protectedProcedure = t.procedure.use(enforceUserIsAuthed);
+
+// Add on global middleware to all procedures
+export const baseProcedure = t.procedure;
 
 export const permissionedProcedure = (...permissions: Permission[]) =>
-  t.procedure.use(enforceUserHasPermission(...permissions));
+  baseProcedure.use(enforceUserHasPermission(...permissions));
 
 export const permissionedProcedureWithAuth = (...permissions: Permission[]) =>
-  t.procedure
-    .use(enforceUserHasPermission(...permissions))
-    .use(enforceUserIsAuthed);
+  permissionedProcedure(...permissions).use(enforceUserIsAuthed);
