@@ -11,7 +11,6 @@ import { RESET_TIMEZONE } from "@/utils/consts";
 dayjs.extend(relativeTime);
 dayjs.extend(timezone);
 dayjs.extend(utc);
-
 dayjs.tz.setDefault(RESET_TIMEZONE);
 
 /**

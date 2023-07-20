@@ -4,7 +4,6 @@ import { StoryCard } from "@/components/StoryCard";
 import TextInput from "@/components/TextInput";
 import Textbox from "@/components/Textbox";
 import { api } from "@/utils/api";
-import { RESET_TIMEZONE } from "@/utils/consts";
 import dayjs from "dayjs";
 import { useRouter } from "next/router";
 import { useState } from "react";
@@ -19,14 +18,10 @@ export default function Admin() {
   const [activeDate, setActiveDate] = useState<string | undefined>();
 
   const handleCreate = async () => {
-    const activeDateObj = activeDate
-      ? dayjs.tz(activeDate, RESET_TIMEZONE).toDate()
-      : undefined;
-
     const result = await createStory.mutateAsync({
       title: title,
       prompt: text,
-      activeDate: activeDateObj,
+      activeDate,
     });
 
     if (result) {

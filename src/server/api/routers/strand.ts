@@ -61,10 +61,9 @@ export const strandRouter = createTRPCRouter({
           })) !== null
         : false;
 
-      const isActiveStory = dayjs(strand.story.active_date).isSame(
-        dayjs(),
-        "day"
-      );
+      const isActiveStory = dayjs
+        .tz(strand.story.active_date)
+        .isSame(dayjs(), "day");
 
       return {
         ...strand,

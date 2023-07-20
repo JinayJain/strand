@@ -7,15 +7,13 @@ import {
 import dayjs from "dayjs";
 import { v4 as uuidv4 } from "uuid";
 import { hasPermission } from "../permissions";
+import { RESET_TIMEZONE } from "@/utils/consts";
+import { getResetTime } from "@/utils/time";
 
 export const storyRouter = createTRPCRouter({
   getCurrentStory: permissionedProcedure("strandStory:read:any").query(
     async ({ ctx }) => {
-      const startOfToday = dayjs().startOf("day").toDate();
-
-      console.log(startOfToday);
-      console.log(dayjs());
-      console.log(dayjs().startOf("day"));
+      const startOfToday = getResetTime();
 
       const [current, next] = await ctx.prisma.$transaction([
         ctx.prisma.strandStory.findFirst({
@@ -36,7 +34,7 @@ export const storyRouter = createTRPCRouter({
         ctx.prisma.strandStory.findFirst({
           where: {
             active_date: {
-              gt: startOfToday,
+              gt: dayjs(startOfToday).endOf("day").toDate(),
             },
           },
           orderBy: {
@@ -47,6 +45,8 @@ export const storyRouter = createTRPCRouter({
           },
         }),
       ]);
+
+      console.log(next);
 
       return {
         current,
@@ -117,17 +117,22 @@ export const storyRouter = createTRPCRouter({
       z.object({
         title: z.string().nonempty().max(256),
         prompt: z.string().nonempty(),
-        activeDate: z.date().optional(),
+        activeDate: z
+          .string()
+          .regex(/^\d{4}-\d{2}-\d{2}$/)
+          .optional(),
       })
     )
     .mutation(async ({ input, ctx }) => {
       const storyId = uuidv4();
 
+      const active_date = dayjs.tz(input.activeDate).toDate();
+
       return ctx.prisma.strandStory.create({
         data: {
           id: storyId,
           title: input.title,
-          active_date: input.activeDate,
+          active_date,
           root: {
             create: {
               story_id: storyId,
