@@ -39,7 +39,7 @@ model StrandStory {
     id          String    @id @default(uuid())
     root_id     String    @unique
     title       String
-    active_date DateTime? @db.Date
+    active_date DateTime?
 
     created_at DateTime @default(now())
     updated_at DateTime @updatedAt

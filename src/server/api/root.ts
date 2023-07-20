@@ -3,11 +3,16 @@ import { strandRouter } from "./routers/strand";
 import { storyRouter } from "./routers/story";
 import { userRouter } from "./routers/user";
 import dayjs from "dayjs";
-import utc from "dayjs/plugin/utc";
 import relativeTime from "dayjs/plugin/relativeTime";
+import timezone from "dayjs/plugin/timezone";
+import utc from "dayjs/plugin/utc";
+import { RESET_TIMEZONE } from "@/utils/consts";
 
-dayjs.extend(utc);
 dayjs.extend(relativeTime);
+dayjs.extend(timezone);
+dayjs.extend(utc);
+
+dayjs.tz.setDefault(RESET_TIMEZONE);
 
 /**
  * This is the primary router for your server.

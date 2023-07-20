@@ -5,16 +5,18 @@ import { api } from "@/utils/api";
 import "@/styles/globals.css";
 import PlausibleProvider from "next-plausible";
 import dayjs from "dayjs";
-import utc from "dayjs/plugin/utc";
 import relativeTime from "dayjs/plugin/relativeTime";
+import timezone from "dayjs/plugin/timezone";
+import utc from "dayjs/plugin/utc";
 import Metadata from "@/components/Metadata";
 
 const MyApp: AppType<{ session: Session | null }> = ({
   Component,
   pageProps: { session, ...pageProps },
 }) => {
-  dayjs.extend(utc);
   dayjs.extend(relativeTime);
+  dayjs.extend(utc);
+  dayjs.extend(timezone);
 
   return (
     <PlausibleProvider

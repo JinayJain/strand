@@ -5,7 +5,7 @@ import dayjs from "dayjs";
 import { useMemo } from "react";
 
 export default function Archive() {
-  const endDate = useMemo(() => dayjs.utc().startOf("day").toDate(), []);
+  const endDate = useMemo(() => dayjs().startOf("day").toDate(), []);
 
   const { data: stories } = api.story.getStories.useQuery({
     to: endDate,

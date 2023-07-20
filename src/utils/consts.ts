@@ -4,3 +4,4 @@ export const PAGE_DESCRIPTION =
   "Strand is a crowdsourced storytelling app that lets strangers write stories together, one sentence at a time.";
 export const PAGE_IMAGE = "https://strand.jinay.dev/api/og";
 export const PAGE_TWITTER_HANDLE = "@TheStrandApp";
+export const RESET_TIMEZONE = "America/New_York";

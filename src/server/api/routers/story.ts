@@ -11,11 +11,17 @@ import { hasPermission } from "../permissions";
 export const storyRouter = createTRPCRouter({
   getCurrentStory: permissionedProcedure("strandStory:read:any").query(
     async ({ ctx }) => {
+      const startOfToday = dayjs().startOf("day").toDate();
+
+      console.log(startOfToday);
+      console.log(dayjs());
+      console.log(dayjs().startOf("day"));
+
       const [current, next] = await ctx.prisma.$transaction([
         ctx.prisma.strandStory.findFirst({
           where: {
             active_date: {
-              equals: dayjs.utc().startOf("day").toDate(),
+              equals: startOfToday,
             },
           },
           include: {
@@ -30,7 +36,7 @@ export const storyRouter = createTRPCRouter({
         ctx.prisma.strandStory.findFirst({
           where: {
             active_date: {
-              gt: dayjs.utc().startOf("day").toDate(),
+              gt: startOfToday,
             },
           },
           orderBy: {
@@ -88,7 +94,7 @@ export const storyRouter = createTRPCRouter({
         "strandStory:read:future"
       )
         ? input.to
-        : dayjs.utc().startOf("day").toDate();
+        : dayjs().toDate();
 
       return ctx.prisma.strandStory.findMany({
         where: {

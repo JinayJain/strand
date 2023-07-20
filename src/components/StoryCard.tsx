@@ -18,7 +18,7 @@ export const StoryCard = ({
   <div key={id} className="space-y-1">
     {activeDate && (
       <p className="text-xs text-gray-400">
-        {dayjs.utc(activeDate).format("MMMM D, YYYY")}
+        {dayjs(activeDate).format("MMMM D, YYYY")}
       </p>
     )}
     <div className="bg-gray-100 p-4 sm:flex sm:items-center sm:space-x-2">

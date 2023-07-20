@@ -10,13 +10,6 @@ const NUM_STORIES = 20;
 const NUM_STRAND_PER_STORY = 20;
 
 async function main() {
-  // const users = await prisma.user.createMany({
-  //   data: randUser({ length: NUM_USERS }).map((user) => ({
-  //     email: user.email,
-  //     name: user.username,
-  //   })),
-  // });
-
   const users = [];
   for (let i = 0; i < NUM_USERS; i++) {
     const newUser = randUser();
@@ -42,6 +35,7 @@ async function main() {
         title: randMovie(),
         active_date: dayjs()
           .add(i - NUM_STORIES / 2, "day")
+          .startOf("day")
           .toDate(),
         root: {
           create: {
