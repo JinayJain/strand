@@ -2,6 +2,7 @@ import Button from "@/components/Button";
 import Layout from "@/components/Layout";
 import Textbox from "@/components/Textbox";
 import { api } from "@/utils/api";
+import { MAX_STRAND_LENGTH_CHARS } from "@/utils/consts";
 import dayjs from "dayjs";
 import { signIn, useSession } from "next-auth/react";
 import Link from "next/link";
@@ -126,6 +127,7 @@ export default function Strand() {
                   value={text}
                   onChange={setText}
                   placeholder="What happens next?"
+                  maxLength={MAX_STRAND_LENGTH_CHARS}
                 />
 
                 <Button onClick={handleSubmit}>Add</Button>

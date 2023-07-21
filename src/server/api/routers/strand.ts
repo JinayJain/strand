@@ -7,6 +7,7 @@ import {
 import type { Strand } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 import dayjs from "dayjs";
+import { MAX_STRAND_LENGTH_CHARS } from "@/utils/consts";
 
 export const strandRouter = createTRPCRouter({
   getStrand: permissionedProcedure("strand:read:any")
@@ -75,7 +76,7 @@ export const strandRouter = createTRPCRouter({
   createChildStrand: permissionedProcedureWithAuth("strand:create:own")
     .input(
       z.object({
-        content: z.string().min(1).max(256),
+        content: z.string().min(1).max(MAX_STRAND_LENGTH_CHARS),
         parentId: z.string(),
       })
     )

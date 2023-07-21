@@ -5,3 +5,4 @@ export const PAGE_DESCRIPTION =
 export const PAGE_IMAGE = "https://strand.jinay.dev/api/og";
 export const PAGE_TWITTER_HANDLE = "@TheStrandApp";
 export const RESET_TIMEZONE = "America/New_York";
+export const MAX_STRAND_LENGTH_CHARS = 300;

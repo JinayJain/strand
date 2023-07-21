@@ -94,7 +94,9 @@ export default function Layout({
 }) {
   const { data: session, status } = useSession();
   const router = useRouter();
-  const title = pageTitle ? `${pageTitle} / Strand` : "Strand";
+  const title = pageTitle
+    ? `${pageTitle} / Strand`
+    : "Strand - Write stories with strangers";
 
   useEffect(() => {
     const fn = async () => {
