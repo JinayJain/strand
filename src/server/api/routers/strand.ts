@@ -62,15 +62,15 @@ export const strandRouter = createTRPCRouter({
         }),
         ctx.prisma.$queryRaw`
         WITH RECURSIVE ancestors AS (
-          SELECT id, parent_id, content, 1 AS depth
+          SELECT id, parent_id, content, author_id, 1 AS depth
           FROM strand
           WHERE id = ${input.id}
           UNION ALL
-          SELECT t.id, t.parent_id, t.content, a.depth + 1
+          SELECT t.id, t.parent_id, t.content, t.author_id, a.depth + 1
           FROM strand t
           JOIN ancestors a ON t.id = a.parent_id
         )
-        SELECT id, parent_id, content
+        SELECT id, parent_id, content, author_id
         FROM ancestors
         WHERE id != ${input.id}
         ORDER BY depth DESC
@@ -92,7 +92,10 @@ export const strandRouter = createTRPCRouter({
 
       return {
         ...strand,
-        ancestors: ancestors as Pick<Strand, "id" | "content" | "parent_id">[],
+        ancestors: ancestors as Pick<
+          Strand,
+          "id" | "content" | "parent_id" | "author_id"
+        >[],
         contributionStatus,
         isActiveStory,
       };
@@ -109,12 +112,26 @@ export const strandRouter = createTRPCRouter({
         where: {
           id: input.parentId,
         },
+        include: {
+          story: true,
+        },
       });
 
       if (!parentStrand) {
         throw new TRPCError({
           code: "NOT_FOUND",
           message: "Parent strand not found",
+        });
+      }
+
+      const isActive = dayjs
+        .tz(parentStrand.story.active_date)
+        .isSame(dayjs(), "day");
+
+      if (!isActive) {
+        throw new TRPCError({
+          code: "CONFLICT",
+          message: "Cannot contribute to an inactive story",
         });
       }
 
