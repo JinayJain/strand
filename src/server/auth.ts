@@ -8,6 +8,7 @@ import {
 import GoogleProvider from "next-auth/providers/google";
 import DiscordProvider from "next-auth/providers/discord";
 import GithubProvider from "next-auth/providers/github";
+import EmailProvider from "next-auth/providers/email";
 import { env } from "@/env.mjs";
 import { prisma } from "@/server/db";
 import { type Role } from "@prisma/client";
@@ -68,17 +69,17 @@ export const authOptions: NextAuthOptions = {
       clientId: env.GITHUB_CLIENT_ID,
       clientSecret: env.GITHUB_CLIENT_SECRET,
     }),
-    // EmailProvider({
-    //   server: {
-    //     host: env.EMAIL_SERVER_HOST,
-    //     port: env.EMAIL_SERVER_PORT,
-    //     auth: {
-    //       user: env.EMAIL_SERVER_USER,
-    //       pass: env.EMAIL_SERVER_PASSWORD,
-    //     },
-    //   },
-    //   from: env.EMAIL_FROM,
-    // }),
+    EmailProvider({
+      server: {
+        host: env.EMAIL_HOST,
+        port: env.EMAIL_PORT,
+        auth: {
+          user: env.EMAIL_USER,
+          pass: env.EMAIL_PASSWORD,
+        },
+      },
+      from: env.EMAIL_FROM,
+    }),
     // CognitoProvider({
     //   clientId: env.COGNITO_CLIENT_ID,
     //   clientSecret: env.COGNITO_CLIENT_SECRET,

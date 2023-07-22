@@ -27,12 +27,14 @@ export const env = createEnv({
     GOOGLE_CLIENT_ID: z.string().min(1),
     GOOGLE_CLIENT_SECRET: z.string().min(1),
 
-    COGNITO_ISSUER: z.string().min(1),
-    COGNITO_CLIENT_ID: z.string().min(1),
-    COGNITO_CLIENT_SECRET: z.string().min(1),
-
     GITHUB_CLIENT_ID: z.string().min(1),
     GITHUB_CLIENT_SECRET: z.string().min(1),
+
+    EMAIL_FROM: z.string().email(),
+    EMAIL_HOST: z.string().min(1),
+    EMAIL_PORT: z.string().min(1),
+    EMAIL_USER: z.string().min(1),
+    EMAIL_PASSWORD: z.string().min(1),
   },
 
   /**
@@ -57,11 +59,13 @@ export const env = createEnv({
     DISCORD_CLIENT_SECRET: process.env.DISCORD_CLIENT_SECRET,
     GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
     GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
-    COGNITO_ISSUER: process.env.COGNITO_ISSUER,
-    COGNITO_CLIENT_ID: process.env.COGNITO_CLIENT_ID,
-    COGNITO_CLIENT_SECRET: process.env.COGNITO_CLIENT_SECRET,
     GITHUB_CLIENT_ID: process.env.GITHUB_CLIENT_ID,
     GITHUB_CLIENT_SECRET: process.env.GITHUB_CLIENT_SECRET,
+    EMAIL_FROM: process.env.EMAIL_FROM,
+    EMAIL_HOST: process.env.EMAIL_HOST,
+    EMAIL_PORT: process.env.EMAIL_PORT,
+    EMAIL_USER: process.env.EMAIL_USER,
+    EMAIL_PASSWORD: process.env.EMAIL_PASSWORD,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation.

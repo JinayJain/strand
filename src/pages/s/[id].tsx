@@ -72,6 +72,57 @@ export default function Strand() {
     }&via=TheStrandApp&text=${shareText}`
   );
 
+  const getContributionBox = () => {
+    if (!strandQuery || !strandQuery.isActiveStory) {
+      return null;
+    }
+
+    switch (strandQuery.contributionStatus) {
+      case "allowed":
+        return (
+          <div className="space-y-2">
+            <Textbox
+              value={text}
+              onChange={setText}
+              placeholder="What happens next?"
+              maxLength={MAX_STRAND_LENGTH_CHARS}
+            />
+            <Button onClick={handleSubmit}>Add</Button>
+          </div>
+        );
+      case "contributed":
+        return (
+          <p className="text-sm text-gray-500">
+            You&apos;ve already contributed to this strand. Try sharing it with
+            your friends!
+          </p>
+        );
+      case "own":
+        return (
+          <p className="text-sm text-gray-500">
+            This is your strand. Try sharing it with your friends to continue
+            the story!
+          </p>
+        );
+      case "unauthenticated":
+        return (
+          <div className="space-y-2">
+            <Textbox
+              disabled
+              value={text}
+              onChange={setText}
+              placeholder="Sign in to contribute"
+              maxLength={MAX_STRAND_LENGTH_CHARS}
+            />
+            <Button onClick={signIn}>Sign in</Button>
+          </div>
+        );
+
+      default:
+        return null;
+    }
+  };
+
   return (
     <Layout pageTitle={strandQuery?.story.title} mainClass="space-y-4 mt-8">
       {strandQuery && (
@@ -113,33 +164,7 @@ export default function Strand() {
         </div>
       )}
 
-      {strandQuery &&
-        strandQuery.isActiveStory &&
-        (strandQuery.hasContributed ? (
-          <p className="text-sm text-gray-500">
-            You&apos;ve already contributed to today&apos;s story.
-          </p>
-        ) : (
-          <div className="space-y-2">
-            {sessionStatus === "authenticated" ? (
-              <>
-                <Textbox
-                  value={text}
-                  onChange={setText}
-                  placeholder="What happens next?"
-                  maxLength={MAX_STRAND_LENGTH_CHARS}
-                />
-
-                <Button onClick={handleSubmit}>Add</Button>
-              </>
-            ) : (
-              <>
-                <Textbox placeholder="Sign up to contribute" disabled />
-                <Button onClick={() => signIn()}>Sign up</Button>
-              </>
-            )}
-          </div>
-        ))}
+      {getContributionBox()}
 
       <div className="space-y-1">
         <h3 className="text-lg font-bold text-gray-500">Continuations</h3>

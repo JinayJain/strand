@@ -24,13 +24,14 @@ export default function Home() {
 
   return (
     <Layout redirectToOnboarding={false}>
-      <p>
-        Strand is a collaborative storytelling experience. Every day, a new
-        prompt begins a story. Each person can make one contribution to an
-        existing story, answering the question “what happens next?” As stories
-        unfold, numerous branching paths emerge, creating a captivating tapestry
-        of interconnected storylines.
-      </p>
+      <div className="mt-8 space-y-2">
+        <h1 className="text-2xl font-bold">Write stories with the world.</h1>
+        <p>
+          Every day is a new story. Choose any storyline to continue, and answer
+          the question “what happens next?” Then, see how others continue your
+          story, creating branching storylines from a single prompt.
+        </p>
+      </div>
 
       {storyQuery?.current && (
         <div className="mt-4 space-y-2">
@@ -42,14 +43,14 @@ export default function Home() {
             <div className="mt-4 flex flex-col space-y-2 sm:flex-row sm:space-x-2 sm:space-y-0">
               <Link href={`/s/${storyQuery.current.root.id}`}>
                 <Button className="plausible-event-name=click-continue-story w-full sm:w-auto">
-                  Continue the story
+                  Explore
                 </Button>
               </Link>
               <Button
                 className="plausible-event-name=click-random-storyline w-full sm:w-auto"
                 onClick={handleRandomStory(storyQuery.current.id)}
               >
-                Random storyline
+                Continue a story
               </Button>
             </div>
           </div>

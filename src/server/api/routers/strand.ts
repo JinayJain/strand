@@ -3,11 +3,42 @@ import {
   createTRPCRouter,
   permissionedProcedure,
   permissionedProcedureWithAuth,
+  type TRPCContext,
 } from "@/server/api/trpc";
 import type { Strand } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 import dayjs from "dayjs";
 import { MAX_STRAND_LENGTH_CHARS } from "@/utils/consts";
+
+type ContributionStatus = "unauthenticated" | "own" | "contributed" | "allowed";
+
+async function getContributionStatus(
+  ctx: TRPCContext,
+  parentStrand: Strand
+): Promise<ContributionStatus> {
+  if (!ctx.session) {
+    return "unauthenticated";
+  }
+
+  if (parentStrand.author_id === ctx.session.user.id) {
+    return "own";
+  }
+
+  const contribution = await ctx.prisma.strand.findFirst({
+    where: {
+      author_id: ctx.session.user.id,
+      parent_id: parentStrand.id,
+    },
+  });
+
+  console.log(contribution);
+
+  if (contribution) {
+    return "contributed";
+  }
+
+  return "allowed";
+}
 
 export const strandRouter = createTRPCRouter({
   getStrand: permissionedProcedure("strand:read:any")
@@ -53,14 +84,7 @@ export const strandRouter = createTRPCRouter({
         });
       }
 
-      const hasContributed = ctx.session
-        ? (await ctx.prisma.strand.findFirst({
-            where: {
-              author_id: ctx.session.user.id,
-              story_id: strand.story_id,
-            },
-          })) !== null
-        : false;
+      const contributionStatus = await getContributionStatus(ctx, strand);
 
       const isActiveStory = dayjs
         .tz(strand.story.active_date)
@@ -69,7 +93,7 @@ export const strandRouter = createTRPCRouter({
       return {
         ...strand,
         ancestors: ancestors as Pick<Strand, "id" | "content" | "parent_id">[],
-        hasContributed,
+        contributionStatus,
         isActiveStory,
       };
     }),
@@ -94,18 +118,28 @@ export const strandRouter = createTRPCRouter({
         });
       }
 
-      const contribution = await ctx.prisma.strand.findFirst({
-        where: {
-          author_id: ctx.session.user.id,
-          story_id: parentStrand.story_id,
-        },
-      });
+      // A user cannot extend their own strand, or contribute to a strand they've already contributed to
+      const contributionStatus = await getContributionStatus(ctx, parentStrand);
 
-      if (contribution) {
-        throw new TRPCError({
-          code: "CONFLICT",
-          message: "User has already contributed to this story",
-        });
+      switch (contributionStatus) {
+        case "unauthenticated":
+          throw new TRPCError({
+            code: "UNAUTHORIZED",
+            message: "Must be logged in to contribute to a strand",
+          });
+        case "own":
+          throw new TRPCError({
+            code: "CONFLICT",
+            message: "Cannot extend your own strand",
+          });
+        case "contributed":
+          throw new TRPCError({
+            code: "CONFLICT",
+            message:
+              "Cannot contribute to a strand you've already contributed to",
+          });
+        default:
+          break;
       }
 
       const childStrand = await ctx.prisma.strand.create({

@@ -1,10 +1,17 @@
 import Button from "@/components/Button";
 import Layout from "@/components/Layout";
+import TextInput from "@/components/TextInput";
+import Textbox from "@/components/Textbox";
 import { FEEDBACK_URL } from "@/utils/consts";
-import { getCsrfToken } from "next-auth/react";
+import { getCsrfToken, signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { RiDiscordFill, RiGithubFill, RiGoogleFill } from "react-icons/ri";
+import {
+  RiDiscordFill,
+  RiGithubFill,
+  RiGoogleFill,
+  RiMailFill,
+} from "react-icons/ri";
 
 const SIGNIN_ERRORS: Record<string, string> = {
   default: "Unable to sign in.",
@@ -24,9 +31,11 @@ const SIGNIN_ERRORS: Record<string, string> = {
 
 export default function Login() {
   const router = useRouter();
+  const { status } = useSession();
   const { error: errorType, callbackUrl: callback } = router.query;
   const callbackUrl = callback ? String(callback) : undefined;
   const [csrfToken, setCsrfToken] = useState<string>("");
+  const [showEmail, setShowEmail] = useState<boolean>(false);
 
   useEffect(() => {
     const fn = async () => {
@@ -36,6 +45,12 @@ export default function Login() {
 
     void fn();
   }, []);
+
+  useEffect(() => {
+    if (status === "authenticated") {
+      void router.push(callbackUrl ?? "/");
+    }
+  }, [status, callbackUrl, router]);
 
   const error = errorType
     ? SIGNIN_ERRORS[(errorType as string).toLowerCase()] ||
@@ -93,13 +108,49 @@ export default function Login() {
             </form>
           ))}
 
-          <a
-            href={FEEDBACK_URL}
-            target="_blank"
-            className="self-center text-xs text-gray-500 underline hover:text-gray-700"
-          >
-            Share feedback
-          </a>
+          <div className="flex items-center justify-center space-x-2">
+            <a
+              href="#"
+              onClick={() => setShowEmail((showEmail) => !showEmail)}
+              className="self-center text-xs text-gray-500 underline hover:text-gray-700"
+            >
+              Email sign-in
+            </a>
+            <div>
+              <a
+                href={FEEDBACK_URL}
+                target="_blank"
+                className="text-xs text-gray-500 underline hover:text-gray-700"
+              >
+                Share feedback
+              </a>
+            </div>
+          </div>
+
+          {showEmail && (
+            <form
+              className="space-y-2"
+              method="POST"
+              action="/api/auth/signin/email"
+            >
+              {callbackUrl && (
+                <input name="callbackUrl" type="hidden" value={callbackUrl} />
+              )}
+              <input name="csrfToken" type="hidden" value={csrfToken} />
+
+              <TextInput
+                name="email"
+                placeholder="Email"
+                type="email"
+                className="w-full"
+                hint="We recommend using other sign-in methods if possible."
+              />
+
+              <Button type="submit" className="w-full" icon={<RiMailFill />}>
+                Send sign-in link
+              </Button>
+            </form>
+          )}
         </div>
       </div>
     </Layout>

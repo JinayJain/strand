@@ -1,4 +1,5 @@
 import clsx from "clsx";
+import { type HTMLProps } from "react";
 
 export default function TextInput({
   className,
@@ -7,6 +8,7 @@ export default function TextInput({
   placeholder,
   error,
   hint,
+  ...props
 }: {
   className?: string;
   value?: string;
@@ -14,7 +16,7 @@ export default function TextInput({
   placeholder?: string;
   error?: string;
   hint?: string;
-}) {
+} & HTMLProps<HTMLInputElement>) {
   return (
     <>
       <input
@@ -26,6 +28,7 @@ export default function TextInput({
         placeholder={placeholder}
         value={value}
         onChange={(e) => onChange?.(e.target.value)}
+        {...props}
       />
       {error && <p className="text-sm text-red-700">[!] {error}</p>}
       {hint && <p className="text-xs text-gray-500">{hint}</p>}
