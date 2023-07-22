@@ -16,7 +16,7 @@ export default function TextInput({
   placeholder?: string;
   error?: string;
   hint?: string;
-} & HTMLProps<HTMLInputElement>) {
+} & Omit<HTMLProps<HTMLInputElement>, "onChange">) {
   return (
     <>
       <input
