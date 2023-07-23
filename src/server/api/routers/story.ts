@@ -108,6 +108,11 @@ export const storyRouter = createTRPCRouter({
         },
         include: {
           root: true,
+          _count: {
+            select: {
+              strands: true,
+            },
+          },
         },
       });
     }),

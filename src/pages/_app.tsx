@@ -9,6 +9,7 @@ import relativeTime from "dayjs/plugin/relativeTime";
 import timezone from "dayjs/plugin/timezone";
 import utc from "dayjs/plugin/utc";
 import Metadata from "@/components/Metadata";
+import { Toaster } from "react-hot-toast";
 
 const MyApp: AppType<{ session: Session | null }> = ({
   Component,
@@ -30,6 +31,23 @@ const MyApp: AppType<{ session: Session | null }> = ({
       <SessionProvider session={session}>
         <Component {...pageProps} />
       </SessionProvider>
+      <Toaster
+        position="bottom-center"
+        toastOptions={{
+          duration: 50000,
+          style: {
+            fontFamily: "var(--font-base)",
+            background: "#fff",
+            border: "1px solid #000",
+            color: "#000",
+            borderRadius: 0,
+          },
+          iconTheme: {
+            primary: "#000",
+            secondary: "#fff",
+          },
+        }}
+      />
     </PlausibleProvider>
   );
 };

@@ -186,4 +186,42 @@ export const strandRouter = createTRPCRouter({
         },
       });
     }),
+  findAvailableStrand: permissionedProcedureWithAuth("strand:read:any")
+    .input(z.object({ storyId: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      // find a strand that the user is able to contribute to
+      const strandCount = await ctx.prisma.strand.count({
+        where: {
+          author_id: {
+            not: ctx.session.user.id,
+          },
+          children: {
+            none: {
+              author_id: ctx.session.user.id,
+            },
+          },
+          story_id: input.storyId,
+        },
+      });
+
+      const strand = await ctx.prisma.strand.findFirst({
+        where: {
+          author_id: {
+            not: ctx.session.user.id,
+          },
+          children: {
+            none: {
+              author_id: ctx.session.user.id,
+            },
+          },
+          story_id: input.storyId,
+        },
+        skip: Math.floor(Math.random() * strandCount),
+        select: {
+          id: true,
+        },
+      });
+
+      return strand;
+    }),
 });

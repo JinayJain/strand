@@ -8,6 +8,7 @@ import { signIn, useSession } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import { toast } from "react-hot-toast";
 import { RiTwitterFill } from "react-icons/ri";
 
 export default function Strand() {
@@ -30,6 +31,7 @@ export default function Strand() {
 
   const createChildStrand = api.strand.createChildStrand.useMutation();
   const reportStrand = api.strand.reportStrand.useMutation();
+  const findAvailableStrand = api.strand.findAvailableStrand.useMutation();
 
   const [text, setText] = useState<string>("");
 
@@ -42,6 +44,20 @@ export default function Strand() {
     setText("");
 
     await router.push(`/s/${createdStrand.id}`);
+  };
+
+  const handleFindAvailable = async () => {
+    if (!strandQuery) return;
+
+    const foundStrand = await findAvailableStrand.mutateAsync({
+      storyId: strandQuery.story.id,
+    });
+
+    if (foundStrand) {
+      await router.push(`/s/${foundStrand.id}`);
+    } else {
+      toast.error("No available strands found. Thanks for contributing!");
+    }
   };
 
   const handleReport = async () => {
@@ -94,14 +110,28 @@ export default function Strand() {
         return (
           <p className="text-sm text-gray-500">
             You&apos;ve already contributed to this strand. Try sharing it with
-            your friends!
+            your friends!{" "}
+            <a
+              href="#"
+              onClick={handleFindAvailable}
+              className="text-sm underline hover:text-gray-700"
+            >
+              Find another strand
+            </a>
           </p>
         );
       case "own":
         return (
           <p className="text-sm text-gray-500">
             This is your strand. Try sharing it with your friends to continue
-            the story!
+            the story!{" "}
+            <a
+              href="#"
+              onClick={handleFindAvailable}
+              className="text-sm underline hover:text-gray-700"
+            >
+              Find another strand
+            </a>
           </p>
         );
       case "unauthenticated":

@@ -24,6 +24,7 @@ export default function Archive() {
               title={story.title}
               activeDate={story.active_date}
               prompt={story.root.content}
+              strandCount={story._count.strands}
             />
           ))}
       </div>
