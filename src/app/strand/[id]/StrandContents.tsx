@@ -6,7 +6,6 @@ import Link from "next/link";
 import { useState } from "react";
 
 import Button from "@/components/Button";
-import Input from "@/components/Input";
 import Textarea from "@/components/Textarea";
 import createStrand from "@/lib/actions/createStrand";
 import clientEnv from "@/lib/clientEnv";

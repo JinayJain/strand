@@ -1,20 +1,9 @@
-import { and, eq, sql } from "drizzle-orm";
+import { and } from "drizzle-orm";
 import Link from "next/link";
 
 import Button from "@/components/Button";
-import { db } from "@/lib/db";
-import { story } from "@/lib/db/schema/story";
-import { strand } from "@/lib/db/schema/strand";
 
-async function getActiveStory() {
-  const [activeStory] = await db
-    .select()
-    .from(story)
-    .where(eq(story.active_date, sql`CURRENT_DATE`))
-    .leftJoin(strand, eq(story.root_id, strand.id));
-
-  return activeStory;
-}
+import { getActiveStory } from "../lib/actions/getActiveStory";
 
 export default async function Home() {
   const activeStory = await getActiveStory();
