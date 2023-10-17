@@ -5,6 +5,8 @@ import Button from "@/components/Button";
 
 import { getActiveStory } from "../lib/query/story";
 
+export const revalidate = 60;
+
 export default async function Home() {
   const activeStory = await getActiveStory();
 
