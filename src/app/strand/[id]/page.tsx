@@ -1,57 +1,16 @@
 import dayjs from "dayjs";
-import { eq, sql } from "drizzle-orm";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { z } from "zod";
 
 import { PageParams, validateParams } from "@/lib/client/params";
-import { db } from "@/lib/db";
-import { story } from "@/lib/db/schema/story";
-import { SelectStrand, strand } from "@/lib/db/schema/strand";
+import {
+  getStrandAncestry,
+  getStrandContinuations,
+  getStrandWithStory,
+} from "@/lib/query/strand";
 
 import StrandContents from "./StrandContents";
-
-const getStrandStatement = db
-  .select()
-  .from(strand)
-  .where(eq(strand.id, sql.placeholder("id")))
-  .leftJoin(story, eq(story.id, strand.story_id))
-  .prepare("get_strand");
-
-async function getStrandWithStory(id: number) {
-  const [strand] = await getStrandStatement.execute({ id });
-  return strand;
-}
-
-async function getStrandAncestry(
-  id: number
-): Promise<(SelectStrand & { depth: number })[]> {
-  return await db.execute(sql`
-    WITH RECURSIVE ancestors AS (
-      SELECT ${strand}.*, 0 AS depth
-      FROM ${strand}
-      WHERE ${strand.id} = ${id}
-
-      UNION ALL
-
-      SELECT t.*, a.depth + 1
-      FROM ${strand} t
-      JOIN ancestors a ON t.id = a.parent_id
-    )
-    SELECT * FROM ancestors
-    ORDER BY depth DESC
-  `);
-}
-
-const getStrandContinuationsStatement = db
-  .select()
-  .from(strand)
-  .where(eq(strand.parent_id, sql.placeholder("id")))
-  .prepare("get_strand_continuations");
-
-async function getStrandContinuations(id: number) {
-  return await getStrandContinuationsStatement.execute({ id });
-}
 
 export default async function StoryPage({ params }: { params: PageParams }) {
   const { id } = validateParams(
@@ -61,11 +20,13 @@ export default async function StoryPage({ params }: { params: PageParams }) {
     })
   );
 
-  const strandWithStory = await getStrandWithStory(id);
-  const ancestry = await getStrandAncestry(id);
-  const continuations = await getStrandContinuations(id);
+  const [strandWithStory, ancestry, continuations] = await Promise.all([
+    getStrandWithStory(id),
+    getStrandAncestry(id),
+    getStrandContinuations(id),
+  ]);
 
-  if (ancestry.length === 0 || !strandWithStory.story) {
+  if (!strandWithStory?.story) {
     notFound();
   }
 

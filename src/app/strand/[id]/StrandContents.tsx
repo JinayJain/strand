@@ -7,7 +7,7 @@ import { useState } from "react";
 
 import Button from "@/components/Button";
 import Textarea from "@/components/Textarea";
-import createStrand from "@/lib/actions/createStrand";
+import createStrand from "@/lib/action/createStrand";
 import clientEnv from "@/lib/clientEnv";
 import { MAX_STRAND_LENGTH } from "@/lib/constants";
 import { SelectStrand } from "@/lib/db/schema/strand";

@@ -3,7 +3,7 @@ import Link from "next/link";
 
 import Button from "@/components/Button";
 
-import { getActiveStory } from "../lib/actions/getActiveStory";
+import { getActiveStory } from "../lib/query/story";
 
 export default async function Home() {
   const activeStory = await getActiveStory();

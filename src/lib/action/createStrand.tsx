@@ -25,8 +25,6 @@ export default async function createStrand(
   storyId: string,
   formData: FormData
 ) {
-  "use server";
-
   async function validateTurnstile(turnstileToken: string) {
     let cloudFlareFormData = new FormData();
     cloudFlareFormData.append("secret", env.CLOUDFLARE_SECRET_KEY);
