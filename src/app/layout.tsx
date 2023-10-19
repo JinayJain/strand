@@ -1,5 +1,6 @@
 import clsx from "clsx";
 import type { Metadata } from "next";
+import PlausibleProvider from "next-plausible";
 import { Nothing_You_Could_Do, Source_Serif_4 } from "next/font/google";
 import Link from "next/link";
 
@@ -27,6 +28,15 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
+      <head>
+        <PlausibleProvider
+          domain="strand.jinay.dev"
+          customDomain="https://stat.lab.jinay.dev"
+          enabled={process.env.NODE_ENV === "production"}
+          trackOutboundLinks
+          taggedEvents
+        />
+      </head>
       <body
         className={clsx(
           baseFont.variable,
