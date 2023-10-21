@@ -1,0 +1,2 @@
+# Scheduled to run at 9pm UTC every day
+*/30 * * * *  python3 /app/generate.py > /proc/1/fd/1 2>/proc/1/fd/2

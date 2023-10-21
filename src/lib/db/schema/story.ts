@@ -6,7 +6,7 @@ export const story = pgTable("story", {
   id: varchar("id").primaryKey(),
   title: varchar("title").notNull(),
   root_id: integer("root_id")
-    .references(() => strand.id)
+    .references(() => strand.id, { onDelete: "set null" })
     .unique(),
   active_date: date("active_date").unique(),
   created_at: date("created_at").defaultNow(),
