@@ -33,8 +33,11 @@ export default async function Home() {
                   <p className="mb-4">{activeStory.strand.content}</p>
                   <div>
                     <Link href={`/strand/${activeStory.strand.id}`} passHref>
-                      <Button>Explore</Button>
+                      <Button>Read</Button>
                     </Link>
+                    <span className="ml-2 text-sm text-mid">
+                      Contribute to today&apos;s story, no sign up required!
+                    </span>
                   </div>
                 </>
               )}
