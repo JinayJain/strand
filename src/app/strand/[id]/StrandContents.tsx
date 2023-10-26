@@ -44,7 +44,6 @@ export default function StrandContents({
           name="content"
           onChange={(e) => setText(e.target.value)}
           value={text}
-          autoFocus
         />
         <div className="flex items-center justify-end space-x-2">
           <p
