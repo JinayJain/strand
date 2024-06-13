@@ -50,20 +50,16 @@ export default async function StoryPage({ params }: { params: PageParams }) {
 
       <div className="space-y-2">
         <h2 className="text-xl font-bold">Continuations</h2>
+        {randomStrand && (
+          <p className="text-sm font-bold underline hover:text-mid">
+            <Link href={`/strand/${randomStrand.id}`}>
+              Jump to a random strand
+            </Link>
+          </p>
+        )}
         {continuations.length > 0 && (
           <p className="text-sm text-mid">
-            Click one to explore its storyline!{" "}
-            {randomStrand && (
-              <>
-                Or{" "}
-                <Link href={`/strand/${randomStrand.id}`}>
-                  <a className="font-bold underline hover:text-mid">
-                    jump to a random strand
-                  </a>
-                </Link>
-                .
-              </>
-            )}
+            Click one to explore its storyline!
           </p>
         )}
         {continuations.map((continuation) => (
