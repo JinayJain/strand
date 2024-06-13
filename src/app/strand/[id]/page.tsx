@@ -8,6 +8,7 @@ import {
   getStrandAncestry,
   getStrandContinuations,
   getStrandWithStory,
+  jumpToRandomStrand,
 } from "@/lib/query/strand";
 
 import StrandContents from "./StrandContents";
@@ -30,6 +31,8 @@ export default async function StoryPage({ params }: { params: PageParams }) {
     notFound();
   }
 
+  const randomStrand = await jumpToRandomStrand(strandWithStory.story.id);
+
   return (
     <div className="space-y-4">
       <div>
@@ -49,7 +52,18 @@ export default async function StoryPage({ params }: { params: PageParams }) {
         <h2 className="text-xl font-bold">Continuations</h2>
         {continuations.length > 0 && (
           <p className="text-sm text-mid">
-            Click one to explore its storyline!
+            Click one to explore its storyline!{" "}
+            {randomStrand && (
+              <>
+                Or{" "}
+                <Link href={`/strand/${randomStrand.id}`}>
+                  <a className="font-bold underline hover:text-mid">
+                    jump to a random strand
+                  </a>
+                </Link>
+                .
+              </>
+            )}
           </p>
         )}
         {continuations.map((continuation) => (

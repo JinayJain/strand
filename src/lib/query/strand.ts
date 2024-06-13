@@ -50,3 +50,16 @@ const getStrandContinuationsStatement = db
 export const getStrandContinuations = cache(async (id: number) => {
   return await getStrandContinuationsStatement.execute({ id });
 });
+
+// jump to a random strand in the story
+export const jumpToRandomStrand = cache(async (storyId: string) => {
+  const [randomStrand] = await db
+    .select()
+    .from(strand)
+    .where(eq(strand.story_id, storyId))
+    .orderBy(sql`random()`)
+    .limit(1)
+    .execute();
+
+  return nullable(randomStrand);
+});
