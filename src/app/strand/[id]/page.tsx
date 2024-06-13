@@ -5,10 +5,10 @@ import { z } from "zod";
 
 import { PageParams, validateParams } from "@/lib/client/params";
 import {
+  jumpToRandomStrand as getRandomStrand,
   getStrandAncestry,
   getStrandContinuations,
   getStrandWithStory,
-  jumpToRandomStrand,
 } from "@/lib/query/strand";
 
 import StrandContents from "./StrandContents";
@@ -31,7 +31,7 @@ export default async function StoryPage({ params }: { params: PageParams }) {
     notFound();
   }
 
-  const randomStrand = await jumpToRandomStrand(strandWithStory.story.id);
+  const randomStrand = await getRandomStrand(strandWithStory.story.id, id);
 
   return (
     <div className="space-y-4">
@@ -51,11 +51,11 @@ export default async function StoryPage({ params }: { params: PageParams }) {
       <div className="space-y-2">
         <h2 className="text-xl font-bold">Continuations</h2>
         {randomStrand && (
-          <p className="text-sm font-bold underline hover:text-mid">
-            <Link href={`/strand/${randomStrand.id}`}>
-              Jump to a random strand
-            </Link>
-          </p>
+          <Link href={`/strand/${randomStrand.id}`}>
+            <button className="border border-mid bg-light px-2 py-1 text-sm font-bold text-mid hover:bg-mid hover:text-light">
+              Go to random strand
+            </button>
+          </Link>
         )}
         {continuations.length > 0 && (
           <p className="text-sm text-mid">

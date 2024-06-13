@@ -1,4 +1,4 @@
-import { eq, sql } from "drizzle-orm";
+import { and, eq, not, sql } from "drizzle-orm";
 import { cache } from "react";
 
 import { db } from "@/lib/db";
@@ -52,14 +52,16 @@ export const getStrandContinuations = cache(async (id: number) => {
 });
 
 // jump to a random strand in the story
-export const jumpToRandomStrand = cache(async (storyId: string) => {
-  const [randomStrand] = await db
-    .select()
-    .from(strand)
-    .where(eq(strand.story_id, storyId))
-    .orderBy(sql`random()`)
-    .limit(1)
-    .execute();
+export const jumpToRandomStrand = cache(
+  async (storyId: string, strandId: number) => {
+    const [randomStrand] = await db
+      .select()
+      .from(strand)
+      .where(and(eq(strand.story_id, storyId), not(eq(strand.id, strandId))))
+      .orderBy(sql`random()`)
+      .limit(1)
+      .execute();
 
-  return nullable(randomStrand);
-});
+    return nullable(randomStrand);
+  }
+);
