@@ -47,6 +47,11 @@ export default async function StoryPage({ params }: { params: PageParams }) {
 
       <div className="space-y-2">
         <h2 className="text-xl font-bold">Continuations</h2>
+        {continuations.length > 0 && (
+          <p className="text-sm text-mid">
+            Click one to explore its storyline!
+          </p>
+        )}
         {continuations.map((continuation) => (
           <p key={continuation.id} className="hover:text-mid">
             <Link href={`/strand/${continuation.id}`}>
