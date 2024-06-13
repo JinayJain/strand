@@ -60,7 +60,7 @@ export default function StrandContents({
         <Turnstile
           siteKey={clientEnv.NEXT_PUBLIC_CLOUDFLARE_SITE_KEY}
           options={{
-            appearance: "interaction-only",
+            appearance: "always",
             theme: "light",
           }}
         />
