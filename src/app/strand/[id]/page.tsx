@@ -52,14 +52,15 @@ export default async function StoryPage({ params }: { params: PageParams }) {
         <h2 className="text-xl font-bold">Continuations</h2>
         {randomStrand && (
           <Link href={`/strand/${randomStrand.id}`}>
-            <button className="border border-mid bg-light px-2 py-1 text-sm font-bold text-mid hover:bg-mid hover:text-light">
+            <button className="border border-dark px-2 py-1 text-sm font-bold hover:bg-light">
               Go to random strand
             </button>
           </Link>
         )}
         {continuations.length > 0 && (
           <p className="text-sm text-mid">
-            Click one to explore its storyline!
+            Each one of the options below is a continuation of the story. Click
+            on one to see where it leads.
           </p>
         )}
         {continuations.map((continuation) => (
