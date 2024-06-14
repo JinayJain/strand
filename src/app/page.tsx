@@ -52,8 +52,13 @@ export default async function Home() {
         <p className="mt-4 text-sm italic text-mid">
           psst. I&apos;m a software engineer who recently quit my job to work on
           passion projects like this one.{" "}
-          <a href="https://90days.jinay.dev/">Follow along</a> if you&apos;re
-          interested!
+          <a
+            href="https://90days.jinay.dev/"
+            className="underline hover:text-dark"
+          >
+            Follow along
+          </a>{" "}
+          if you&apos;re interested!
         </p>
       </div>
     </div>
