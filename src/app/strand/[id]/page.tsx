@@ -62,7 +62,9 @@ export default async function StoryPage({ params }: { params: PageParams }) {
                 <Link href={`/strand/${continuation.id}`} key={continuation.id}>
                   <div className="group mb-4 flex items-center space-x-2">
                     <div className="h-4 w-4 rounded-full border-2 border-dark group-hover:bg-light" />
-                    <p className="hover:text-mid">{continuation.content}</p>
+                    <p className="flex-1 hover:text-mid">
+                      {continuation.content}
+                    </p>
                   </div>
                 </Link>
               ))}
