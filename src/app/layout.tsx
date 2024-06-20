@@ -1,10 +1,14 @@
 import clsx from "clsx";
+import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
 import type { Metadata } from "next";
 import PlausibleProvider from "next-plausible";
 import { Nothing_You_Could_Do, Source_Serif_4 } from "next/font/google";
 import Link from "next/link";
 
 import "./globals.css";
+
+dayjs.extend(utc);
 
 const baseFont = Source_Serif_4({
   subsets: ["latin"],
@@ -41,7 +45,7 @@ export default function RootLayout({
         className={clsx(
           baseFont.variable,
           handwritingFont.variable,
-          "mx-auto max-w-screen-md bg-white px-4 font-base text-base text-black"
+          "mx-auto mb-12 max-w-screen-md bg-white px-4 font-base text-base text-black"
         )}
       >
         <nav className="sticky flex items-center justify-between py-4 hover:text-mid">

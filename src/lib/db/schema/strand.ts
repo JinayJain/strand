@@ -1,10 +1,10 @@
 import { relations } from "drizzle-orm";
 import {
   AnyPgColumn,
-  date,
   integer,
   pgTable,
   serial,
+  timestamp,
   varchar,
 } from "drizzle-orm/pg-core";
 
@@ -17,7 +17,7 @@ export const strand = pgTable("strand", {
     .notNull()
     .references((): AnyPgColumn => story.id),
   content: varchar("content").notNull(),
-  created_at: date("created_at").defaultNow(),
+  created_at: timestamp("created_at").defaultNow(),
 });
 
 export type SelectStrand = typeof strand.$inferSelect;

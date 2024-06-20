@@ -3,6 +3,20 @@ import postgres from "postgres";
 
 import env from "../env";
 
-// for query purposes
-const queryClient = postgres(env.DB_URL);
-export const db: PostgresJsDatabase = drizzle(queryClient);
+let db: PostgresJsDatabase;
+
+declare const globalThis: {
+  db: PostgresJsDatabase;
+} & typeof global;
+
+if (process.env.NODE_ENV === "production") {
+  db = drizzle(postgres(env.DB_URL));
+} else {
+  if (!globalThis.db) {
+    globalThis.db = drizzle(postgres(env.DB_URL));
+  }
+
+  db = globalThis.db;
+}
+
+export default db;

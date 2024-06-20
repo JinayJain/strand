@@ -1,4 +1,3 @@
-import { and } from "drizzle-orm";
 import Link from "next/link";
 
 import Button from "@/components/Button";
@@ -18,6 +17,10 @@ export default async function Home() {
           Every day is a new story. Choose any storyline to continue, and answer
           the question “what happens next?” Then, see how others continue your
           story, creating branching storylines from a single prompt.
+        </p>
+        <p>
+          It&apos;s like a choose-your-own-adventure book, written by the
+          internet.
         </p>
       </div>
       <div className="space-y-4">

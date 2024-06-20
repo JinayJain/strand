@@ -6,7 +6,7 @@ import { redirect } from "next/navigation";
 import { z } from "zod";
 
 import { CLOUDFLARE_TURNSTILE_URL, MAX_STRAND_LENGTH } from "../constants";
-import { db } from "../db";
+import db from "../db";
 import { strand } from "../db/schema/strand";
 import env from "../env";
 

@@ -1,7 +1,7 @@
 import { faker } from "@faker-js/faker";
 import { eq } from "drizzle-orm";
 
-import { db } from "@/lib/db";
+import db from "@/lib/db";
 import { story } from "@/lib/db/schema/story";
 import { strand } from "@/lib/db/schema/strand";
 

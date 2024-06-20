@@ -1,0 +1,153 @@
+{
+  "version": "5",
+  "dialect": "pg",
+  "id": "cfdadb0e-3584-4789-988b-9fbbdcc662b5",
+  "prevId": "2acee9d8-93fd-4e45-a9d1-b0b06e872ee4",
+  "tables": {
+    "story": {
+      "name": "story",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "varchar",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "title": {
+          "name": "title",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "root_id": {
+          "name": "root_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "active_date": {
+          "name": "active_date",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "story_root_id_strand_id_fk": {
+          "name": "story_root_id_strand_id_fk",
+          "tableFrom": "story",
+          "tableTo": "strand",
+          "columnsFrom": [
+            "root_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "set null",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "story_root_id_unique": {
+          "name": "story_root_id_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "root_id"
+          ]
+        },
+        "story_active_date_unique": {
+          "name": "story_active_date_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "active_date"
+          ]
+        }
+      }
+    },
+    "strand": {
+      "name": "strand",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "parent_id": {
+          "name": "parent_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "story_id": {
+          "name": "story_id",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "content": {
+          "name": "content",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "strand_parent_id_strand_id_fk": {
+          "name": "strand_parent_id_strand_id_fk",
+          "tableFrom": "strand",
+          "tableTo": "strand",
+          "columnsFrom": [
+            "parent_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "strand_story_id_story_id_fk": {
+          "name": "strand_story_id_story_id_fk",
+          "tableFrom": "strand",
+          "tableTo": "story",
+          "columnsFrom": [
+            "story_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    }
+  },
+  "enums": {},
+  "schemas": {},
+  "_meta": {
+    "schemas": {},
+    "tables": {},
+    "columns": {}
+  }
+}

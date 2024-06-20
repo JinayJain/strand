@@ -1,7 +1,7 @@
 import { eq, sql } from "drizzle-orm";
 import { cache } from "react";
 
-import { db } from "@/lib/db";
+import db from "@/lib/db";
 import { story } from "@/lib/db/schema/story";
 import { strand } from "@/lib/db/schema/strand";
 

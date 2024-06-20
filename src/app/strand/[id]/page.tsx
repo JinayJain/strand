@@ -3,15 +3,16 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { z } from "zod";
 
+import Button from "@/components/Button";
 import { PageParams, validateParams } from "@/lib/client/params";
 import {
-  jumpToRandomStrand as getRandomStrand,
   getStrandAncestry,
   getStrandContinuations,
   getStrandWithStory,
 } from "@/lib/query/strand";
 
-import StrandContents from "./StrandContents";
+import StrandAncestry from "./StrandContents";
+import StrandInput from "./StrandInput";
 
 export default async function StoryPage({ params }: { params: PageParams }) {
   const { id } = validateParams(
@@ -31,8 +32,6 @@ export default async function StoryPage({ params }: { params: PageParams }) {
     notFound();
   }
 
-  const randomStrand = await getRandomStrand(strandWithStory.story.id, id);
-
   return (
     <div className="space-y-4">
       <div>
@@ -42,39 +41,45 @@ export default async function StoryPage({ params }: { params: PageParams }) {
         </h3>
       </div>
 
-      <StrandContents
-        ancestry={ancestry}
-        parentId={id}
-        storyId={strandWithStory.story.id}
-      />
+      <StrandAncestry ancestry={ancestry} className="pb-8" />
 
-      <div className="space-y-2">
-        <h2 className="text-xl font-bold">Continuations</h2>
-        {randomStrand && (
-          <Link href={`/strand/${randomStrand.id}`}>
-            <button className="border border-dark px-2 py-1 text-sm font-bold hover:bg-light">
-              Go to random strand
-            </button>
-          </Link>
-        )}
-        {continuations.length > 0 && (
-          <p className="text-sm text-mid">
-            Each one of the options below is a continuation of the story. Click
-            on one to see where it leads.
-          </p>
-        )}
-        {continuations.map((continuation) => (
-          <p key={continuation.id} className="hover:text-mid">
-            <Link href={`/strand/${continuation.id}`}>
-              {continuation.content}
-            </Link>
-          </p>
-        ))}
+      <hr />
 
-        {continuations.length === 0 && (
-          <p>No continuations yet. Add your own!</p>
+      <div>
+        <div className="mb-4">
+          <h3 className="font-bold">What happens next?</h3>
+          {continuations.length !== 0 && (
+            <p className="text-sm text-mid">
+              Select an option to find out, or continue the story yourself!{" "}
+            </p>
+          )}
+        </div>
+
+        {continuations.length === 0 ? null : (
+          <>
+            <div className="space-y-4">
+              {continuations.map((continuation) => (
+                <Link href={`/strand/${continuation.id}`} key={continuation.id}>
+                  <div className="group mb-4 flex items-center space-x-2">
+                    <div className="h-4 w-4 rounded-full border-2 border-dark group-hover:bg-light" />
+                    <p className="hover:text-mid">{continuation.content}</p>
+                  </div>
+                </Link>
+              ))}
+            </div>
+
+            <p className="text-sm text-mid">Or...</p>
+          </>
         )}
+
+        <StrandInput
+          parentId={id}
+          storyId={strandWithStory.story.id}
+          className="mt-1"
+        />
       </div>
+
+      <hr />
     </div>
   );
 }

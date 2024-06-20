@@ -1,7 +1,7 @@
 import { and, eq, not, sql } from "drizzle-orm";
 import { cache } from "react";
 
-import { db } from "@/lib/db";
+import db from "@/lib/db";
 import { story } from "@/lib/db/schema/story";
 import { SelectStrand, strand } from "@/lib/db/schema/strand";
 
@@ -52,7 +52,7 @@ export const getStrandContinuations = cache(async (id: number) => {
 });
 
 // jump to a random strand in the story
-export const jumpToRandomStrand = cache(
+export const getRandomStrand = cache(
   async (storyId: string, strandId: number) => {
     const [randomStrand] = await db
       .select()
