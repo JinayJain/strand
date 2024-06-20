@@ -39,7 +39,7 @@ export default async function Home() {
                       <Button>Read</Button>
                     </Link>
                     <span className="ml-2 text-sm text-mid">
-                      Contribute to today&apos;s story, no sign up required!
+                      No sign up required!
                     </span>
                   </div>
                 </>
