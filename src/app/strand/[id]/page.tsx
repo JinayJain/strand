@@ -43,7 +43,7 @@ export default async function StoryPage({ params }: { params: PageParams }) {
 
       <StrandAncestry ancestry={ancestry} className="pb-8" />
 
-      <hr />
+      <hr className="border-light" />
 
       <div>
         <div className="mb-4">
@@ -79,7 +79,7 @@ export default async function StoryPage({ params }: { params: PageParams }) {
         />
       </div>
 
-      <hr />
+      <hr className="border-light" />
     </div>
   );
 }
