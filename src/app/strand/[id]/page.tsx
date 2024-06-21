@@ -48,11 +48,11 @@ export default async function StoryPage({ params }: { params: PageParams }) {
       <div>
         <div className="mb-4">
           <h3 className="font-bold">What happens next?</h3>
-          {continuations.length !== 0 && (
-            <p className="text-sm text-mid">
-              Select an option to find out, or continue the story yourself!{" "}
-            </p>
-          )}
+          <p className="text-sm text-mid">
+            {continuations.length !== 0
+              ? "Select an option to find out, or continue the story yourself!"
+              : "Continue the story yourself!"}
+          </p>
         </div>
 
         {continuations.length === 0 ? null : (
