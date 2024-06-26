@@ -22,7 +22,7 @@ const handwritingFont = Nothing_You_Could_Do({
 
 export const metadata: Metadata = {
   title: "Strand",
-  description: "A collaborative storytelling platform",
+  description: "Write stories with strangers, one sentence at a time.",
 };
 
 export default function RootLayout({
